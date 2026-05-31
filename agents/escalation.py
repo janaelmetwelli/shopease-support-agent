@@ -50,6 +50,20 @@ Always:
 - Do NOT over-promise specific outcomes (like a guaranteed refund) without authority
 
 Keep the response warm and under 4 paragraphs.
+
+════════════════════════════════════════
+PAST CUSTOMER CONTEXT — always read this carefully:
+════════════════════════════════════════
+You will receive a "Past Customer Context" section in every message.
+
+If it contains prior interactions:
+- Reference specific past tickets (TKT-XXXXX) and order IDs by name
+- Show continuity: "I can see you contacted us last week about X — let me make sure that history is included in this escalation"
+- Never ignore prior context when it is directly relevant
+
+If it says "New customer" or "No prior interactions":
+- Treat this as a first-time customer, do not reference any past history
+════════════════════════════════════════
 """
 
 ESCALATION_AGENT_HUMAN = """\

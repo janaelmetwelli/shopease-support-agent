@@ -125,7 +125,7 @@ class LongTermMemory:
             result["distances"][0],
         ):
             relevance = 1.0 - dist
-            if relevance > 0.3:  # only return reasonably relevant memories
+            if relevance > 0.4:  # only return reasonably relevant memories
                 memories.append(
                     {
                         "content": doc,

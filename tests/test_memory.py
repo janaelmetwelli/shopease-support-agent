@@ -372,10 +372,6 @@ class TestMemoryGaps:
 
         assert ids_used[0] != ids_used[1]
 
-    @pytest.mark.xfail(
-        reason="Relevance threshold is 0.3 — should be 0.5 for MiniLM embeddings",
-        strict=True,
-    )
     def test_relevance_threshold_is_0_5(self):
         ltm, _, _ = make_ltm_with_mock_collection(
             docs=["Vaguely related memory."],

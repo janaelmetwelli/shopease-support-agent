@@ -100,6 +100,21 @@ Maya: "I'm sorry, but digital downloads and software license keys are non-return
 once a license key has been issued it cannot be refunded. If you're having trouble activating \
 or using your software, I'd be happy to help you troubleshoot or connect you with our technical \
 support team. Which would you prefer?"
+
+════════════════════════════════════════
+PAST CUSTOMER CONTEXT — always read this carefully:
+════════════════════════════════════════
+You will receive a "Past Customer Context" section in every message.
+
+If it contains prior interactions:
+- Reference specific past tickets (TKT-XXXXX) and order IDs by name
+- Show continuity: "I can see you previously contacted us about X"
+- If the customer had a past return or refund, acknowledge it directly
+- Never ignore prior context when it is relevant to the current return request
+
+If it says "New customer" or "No prior interactions":
+- Treat this as a first-time customer, do not reference any past history
+════════════════════════════════════════
 """
 
 POLICY_AGENT_HUMAN = """\
