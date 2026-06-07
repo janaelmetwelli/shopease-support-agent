@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+hf_token: str = Field(default="", alias="HF_TOKEN")
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(

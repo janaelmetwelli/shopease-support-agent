@@ -15,7 +15,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 # Use HF_HOME if set; otherwise fall back to E:/hf_cache.
-_HF_CACHE = os.environ.get("HF_HOME", "E:/hf_cache")
+_HF_CACHE = os.environ.get("HF_HOME", "E:/hf_cache")#so not to download it every time
 
 # Module-level singleton — loaded once per process.
 _model = None
@@ -23,7 +23,7 @@ _model = None
 
 def _get_model(model_name: str):
     global _model
-    if _model is None:
+    if _model is None:#model is loaded once not every time use the same instance
         try:
             from sentence_transformers import SentenceTransformer
             logger.info("Loading embedding model: %s (cache: %s)", model_name, _HF_CACHE)
@@ -59,7 +59,7 @@ class LocalEmbeddings:
     def embed_query(self, text: str) -> List[float]:
         model = _get_model(self.model_name)
         embedding = model.encode([text], show_progress_bar=False, normalize_embeddings=True)
-        return embedding[0].tolist()
+        return embedding[0].tolist()#each inner list is a 384-number vector representing one text.
 
 
 # Module-level singleton for the cross-encoder — loaded once per process.

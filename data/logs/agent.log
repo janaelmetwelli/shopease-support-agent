@@ -413,3 +413,499 @@
 2026-05-28 15:43:41,072 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
 2026-05-28 15:43:44,872 [INFO] rag.embeddings — Cross-encoder loaded successfully.
 2026-05-28 15:43:47,014 [INFO] agents.general_agent — General Agent (Layla) responded | customer=CUST-001 query_preview=hi
+2026-05-29 15:13:30,003 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-29 15:13:40,903 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-29 15:13:40,978 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-29 15:15:02,183 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_e3d1b337
+2026-05-29 15:15:18,532 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-29 15:15:18,738 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-29 15:15:22,109 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-29 15:15:24,643 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-29 15:17:07,388 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_e3d1b337
+2026-05-29 15:17:08,697 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-29 15:22:01,647 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-29 15:22:09,257 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-29 15:22:09,317 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-29 15:23:01,888 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_aea418f7
+2026-05-29 15:23:09,183 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-29 15:23:09,367 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-29 15:23:12,632 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-29 15:23:13,946 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-29 15:23:35,174 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_aea418f7
+2026-05-29 15:23:35,239 [WARNING] agents.order_lookup — Incorrect OTP attempt for customer CUST-001
+2026-05-29 15:24:06,133 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_aea418f7
+2026-05-29 15:24:06,198 [WARNING] agents.order_lookup — Incorrect OTP attempt for customer CUST-001
+2026-05-29 15:36:04,199 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-29 15:36:10,867 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-29 15:36:10,903 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-29 15:36:40,670 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_22ff9c8e
+2026-05-29 15:36:48,075 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-29 15:36:48,410 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-29 15:37:47,784 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-29 15:37:57,295 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-29 15:37:57,383 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-29 15:38:18,798 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_0ceac400
+2026-05-29 15:38:23,526 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-29 15:38:23,727 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-29 15:38:26,841 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-29 15:38:28,175 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-29 15:39:11,369 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_0ceac400
+2026-05-29 15:39:11,468 [WARNING] agents.order_lookup — Incorrect OTP attempt for customer CUST-001
+2026-05-29 15:41:51,655 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_0ceac400
+2026-05-29 15:41:51,735 [WARNING] agents.order_lookup — Incorrect OTP attempt for customer CUST-001
+2026-05-29 15:42:02,959 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_0ceac400
+2026-05-29 15:42:03,051 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-29 15:42:03,104 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-29 15:42:03,128 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-29 15:42:04,092 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-29 15:42:07,987 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-29 15:42:10,633 [INFO] agents.general_agent — General Agent (Layla) responded | customer=CUST-001 query_preview=give me a new one
+2026-05-29 15:42:10,699 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-29 15:42:10,699 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-29 15:56:16,845 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-29 15:56:25,233 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-29 15:56:25,280 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-29 15:57:22,549 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_37d047f3
+2026-05-29 15:57:33,301 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-29 15:57:34,321 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-29 15:57:37,095 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-29 15:57:38,865 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-29 15:58:15,325 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10001 confidence=0.90 | customer=CUST-001 session=session_CUST-001_37d047f3
+2026-05-29 15:58:15,407 [INFO] agents.order_lookup — Identity verified via OTP for customer CUST-001
+2026-05-29 15:58:15,446 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-29 15:58:15,513 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-29 15:58:15,587 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-29 15:58:16,529 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-29 15:58:20,390 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-29 15:58:22,811 [INFO] agents.order_lookup — Order Lookup Agent (Nora) | customer=CUST-001 order_id=ORD-10001 status=resolved emotion=neutral
+2026-05-30 22:01:52,079 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-30 22:02:02,311 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-30 22:02:02,340 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-30 22:02:34,861 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_16451392
+2026-05-30 22:02:51,519 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-30 22:02:51,870 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-30 22:02:55,438 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-30 22:02:55,720 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-30 22:02:55,750 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-30 22:02:55,767 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-30 22:02:56,962 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-30 22:03:01,821 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-30 22:03:03,296 [INFO] agents.general_agent — General Agent (Layla) responded | customer=CUST-001 query_preview=hi
+2026-05-30 22:03:26,647 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_16451392
+2026-05-30 22:03:28,048 [INFO] agents.order_lookup — Nora planner: 4 tasks planned for customer CUST-001
+2026-05-30 22:03:30,283 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-30 22:03:30,283 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=send_otp 2.23s
+2026-05-30 22:03:30,285 [WARNING] agents.order_lookup — OTP mismatch for customer CUST-001
+2026-05-30 22:03:30,285 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=verify_otp 0.00s
+2026-05-30 22:03:30,292 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T3 tool=fetch_order 0.01s
+2026-05-30 22:03:30,294 [INFO] agents.order_lookup — Nora scheduler wave=4 task=T4 tool=check_order_status 0.00s
+2026-05-30 22:03:30,295 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 4 waves
+2026-05-30 22:04:08,222 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_16451392
+2026-05-30 22:04:08,935 [INFO] agents.order_lookup — Nora planner: 3 tasks planned for customer CUST-001
+2026-05-30 22:04:08,936 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 0 waves
+2026-05-30 22:04:25,395 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_16451392
+2026-05-30 22:04:26,096 [INFO] agents.order_lookup — Nora planner: 3 tasks planned for customer CUST-001
+2026-05-30 22:04:26,097 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 0 waves
+2026-05-30 22:06:00,271 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_16451392
+2026-05-30 22:06:02,546 [INFO] agents.general_agent — General Agent (Layla) responded | customer=CUST-001 query_preview=resend it
+2026-05-30 22:06:02,637 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-30 22:06:02,637 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-30 22:14:18,115 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-30 22:14:24,706 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-30 22:14:24,732 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-30 22:14:49,071 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_e3f5716f
+2026-05-30 22:14:56,249 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-30 22:14:56,440 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-30 22:15:00,003 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-30 22:15:01,089 [INFO] agents.order_lookup — Nora planner: 4 tasks planned for customer CUST-001
+2026-05-30 22:15:03,542 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-30 22:15:03,543 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=send_otp 2.45s
+2026-05-30 22:15:03,547 [WARNING] agents.order_lookup — OTP mismatch for customer CUST-001
+2026-05-30 22:15:03,547 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=verify_otp 0.00s
+2026-05-30 22:15:03,573 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T3 tool=fetch_order 0.02s
+2026-05-30 22:15:03,577 [INFO] agents.order_lookup — Nora scheduler wave=4 task=T4 tool=check_order_status 0.00s
+2026-05-30 22:15:03,578 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 4 waves
+2026-05-30 22:15:28,073 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_e3f5716f
+2026-05-30 22:15:28,848 [INFO] agents.order_lookup — Nora planner: 3 tasks planned for customer CUST-001
+2026-05-30 22:15:28,849 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 0 waves
+2026-05-30 22:21:50,184 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-30 22:21:56,765 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-30 22:21:56,789 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-30 22:22:27,100 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_0a079c56
+2026-05-30 22:22:32,815 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-30 22:22:33,313 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-30 22:22:36,462 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-30 22:22:37,476 [INFO] agents.order_lookup — Nora planner: 4 tasks planned for customer CUST-001
+2026-05-30 22:22:39,063 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-30 22:22:39,063 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=send_otp 1.59s
+2026-05-30 22:22:39,065 [WARNING] agents.order_lookup — OTP mismatch for customer CUST-001
+2026-05-30 22:22:39,065 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=verify_otp 0.00s
+2026-05-30 22:22:39,072 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T3 tool=fetch_order 0.01s
+2026-05-30 22:22:39,073 [INFO] agents.order_lookup — Nora scheduler wave=4 task=T4 tool=check_order_status 0.00s
+2026-05-30 22:22:39,074 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 4 waves
+2026-05-30 22:23:03,006 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_0a079c56
+2026-05-30 22:23:03,722 [INFO] agents.order_lookup — Nora planner: 3 tasks planned for customer CUST-001
+2026-05-30 22:23:03,724 [INFO] agents.order_lookup — Identity verified for customer CUST-001
+2026-05-30 22:23:03,724 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T5 tool=verify_otp 0.00s
+2026-05-30 22:23:03,728 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T6 tool=fetch_order 0.00s
+2026-05-30 22:23:03,729 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T7 tool=check_order_status 0.00s
+2026-05-30 22:23:03,730 [INFO] agents.order_lookup — Nora scheduler complete: 7 tasks in 3 waves
+2026-05-30 22:25:56,856 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-30 22:26:03,620 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-30 22:26:03,645 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-30 22:26:26,909 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_775ab9e7
+2026-05-30 22:26:33,153 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-30 22:26:33,659 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-30 22:26:36,703 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-30 22:26:37,823 [INFO] agents.order_lookup — Nora planner: 4 tasks planned for customer CUST-001
+2026-05-30 22:26:39,341 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-30 22:26:39,342 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=send_otp 1.52s
+2026-05-30 22:26:39,345 [WARNING] agents.order_lookup — OTP mismatch for customer CUST-001
+2026-05-30 22:26:39,346 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=verify_otp 0.00s
+2026-05-30 22:26:39,360 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T3 tool=fetch_order 0.01s
+2026-05-30 22:26:39,362 [INFO] agents.order_lookup — Nora scheduler wave=4 task=T4 tool=check_order_status 0.00s
+2026-05-30 22:26:39,363 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 4 waves
+2026-05-30 22:27:00,499 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_775ab9e7
+2026-05-30 22:27:01,173 [INFO] agents.order_lookup — Nora planner: 3 tasks planned for customer CUST-001
+2026-05-30 22:27:01,174 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 0 waves
+2026-05-30 23:01:48,636 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-30 23:01:55,102 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-30 23:01:55,139 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-30 23:02:15,645 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_f49b9185
+2026-05-30 23:02:20,362 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-30 23:02:20,528 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-30 23:02:23,921 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-30 23:02:24,895 [INFO] agents.order_lookup — Nora planner: 4 tasks planned for customer CUST-001
+2026-05-30 23:02:28,030 [INFO] agents.order_lookup — OTP dispatched for customer CUST-001
+2026-05-30 23:02:28,031 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=send_otp 3.13s
+2026-05-30 23:02:28,034 [WARNING] agents.order_lookup — OTP mismatch for customer CUST-001
+2026-05-30 23:02:28,035 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=verify_otp 0.00s
+2026-05-30 23:02:28,047 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T3 tool=fetch_order 0.01s
+2026-05-30 23:02:28,049 [INFO] agents.order_lookup — Nora scheduler wave=4 task=T4 tool=check_order_status 0.00s
+2026-05-30 23:02:28,050 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 4 waves
+2026-05-30 23:02:48,049 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_f49b9185
+2026-05-30 23:02:48,122 [INFO] agents.order_lookup — Nora planner: OTP fast-path — 4 tasks for customer CUST-001
+2026-05-30 23:02:48,123 [INFO] agents.order_lookup — Identity verified for customer CUST-001
+2026-05-30 23:02:48,124 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=verify_otp 0.00s
+2026-05-30 23:02:48,128 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=fetch_order 0.00s
+2026-05-30 23:02:48,156 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-30 23:02:48,195 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-30 23:02:48,222 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-30 23:02:49,502 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-30 23:02:54,419 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-30 23:02:55,012 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T3 tool=retrieve_knowledge 6.88s
+2026-05-30 23:02:55,013 [INFO] agents.order_lookup — Nora scheduler wave=3 task=T4 tool=check_order_status 0.00s
+2026-05-30 23:02:55,014 [INFO] agents.order_lookup — Nora scheduler complete: 4 tasks in 3 waves
+2026-05-30 23:02:55,616 [INFO] agents.order_lookup — Nora joiner decision: ANSWER reason: All tasks completed successfully, order information retrieved
+2026-05-30 23:02:56,269 [INFO] agents.order_lookup — Nora joiner ANSWER | customer=CUST-001 status=resolved
+2026-05-30 23:03:33,413 [INFO] agents.supervisor — Supervisor | intent=policy_returns order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_f49b9185
+2026-05-30 23:03:34,445 [INFO] guardrails.policy_guardrail — Policy violation POL-002: Return request 377 days after delivery (limit 30)
+2026-05-30 23:03:35,666 [INFO] agents.policy_returns — Policy & Returns Agent responded | customer=CUST-001 action=DECLINE rma=N/A
+2026-05-30 23:04:11,617 [INFO] agents.supervisor — Supervisor | intent=policy_returns order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_f49b9185
+2026-05-30 23:04:12,518 [INFO] guardrails.policy_guardrail — Policy violation POL-002: Return request 377 days after delivery (limit 30)
+2026-05-30 23:04:12,972 [INFO] agents.policy_returns — Policy & Returns Agent responded | customer=CUST-001 action=DECLINE rma=N/A
+2026-05-30 23:04:54,924 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=ORD-10002 confidence=0.90 | customer=CUST-001 session=session_CUST-001_f49b9185
+2026-05-30 23:04:55,538 [INFO] agents.order_lookup — Nora planner: 2 tasks planned for customer CUST-001
+2026-05-30 23:04:55,546 [INFO] agents.order_lookup — Nora scheduler wave=1 task=T1 tool=fetch_order 0.00s
+2026-05-30 23:04:55,549 [INFO] agents.order_lookup — Nora scheduler wave=2 task=T2 tool=collect_return_context 0.00s
+2026-05-30 23:04:55,551 [INFO] agents.order_lookup — Nora scheduler complete: 2 tasks in 2 waves
+2026-05-30 23:04:55,948 [INFO] agents.order_lookup — Nora joiner decision: ANSWER reason: All necessary information is available in the task results to respond to the customer's query about the items they added to their order.
+2026-05-30 23:04:56,544 [INFO] agents.order_lookup — Nora joiner ANSWER | customer=CUST-001 status=pending_routing
+2026-05-30 23:05:28,717 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_f49b9185
+2026-05-30 23:05:31,588 [INFO] agents.general_agent — General Agent (Layla) responded | customer=CUST-001 query_preview=i want to make anothor order
+2026-05-31 02:27:09,527 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 02:27:16,886 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 02:27:16,928 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 02:28:09,340 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_4ef66306
+2026-05-31 02:28:17,457 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 02:28:17,642 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 02:28:21,188 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 02:29:00,242 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_4ef66306
+2026-05-31 02:29:00,341 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 02:29:00,379 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 02:29:00,428 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 02:29:01,477 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 02:29:06,025 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 02:29:09,866 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=LOW_CONFIDENCE query=what are the kind of skin products you have
+2026-05-31 02:29:10,075 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-31 02:29:10,075 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-31 02:40:39,894 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 02:40:46,959 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 02:40:46,991 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 02:41:34,488 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_4d50c594
+2026-05-31 02:41:40,207 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 02:41:40,408 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 02:41:44,412 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 02:42:22,249 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_4d50c594
+2026-05-31 02:42:22,360 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 02:42:22,394 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 02:42:22,428 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 02:42:23,592 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 02:42:28,413 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 02:42:30,742 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=what are the skincare products
+2026-05-31 02:51:50,566 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 02:52:00,021 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 02:52:00,097 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 02:52:20,769 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_8fec5604
+2026-05-31 02:52:27,113 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 02:52:27,952 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 02:52:30,969 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 02:52:53,442 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_8fec5604
+2026-05-31 02:52:53,555 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 02:52:53,590 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 02:52:53,619 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 02:52:54,795 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 02:52:59,415 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 02:53:01,123 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=what are the skincare products available
+2026-05-31 02:53:19,451 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_8fec5604
+2026-05-31 02:53:20,787 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=LOW_CONFIDENCE query=do you have a moistraizer
+2026-05-31 02:53:55,499 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_8fec5604
+2026-05-31 02:53:56,931 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=LOW_CONFIDENCE query=actually can you help me set up the laptop i just got from y
+2026-05-31 02:53:57,101 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-31 02:53:57,101 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-31 03:02:26,502 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 03:02:37,745 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 03:02:45,852 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 03:02:45,890 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 03:03:06,539 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:03:13,068 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 03:03:13,304 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 03:03:17,165 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 03:03:40,902 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:03:41,049 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 03:03:41,086 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 03:03:41,114 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 03:03:42,477 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 03:03:47,728 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 03:03:49,229 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=i am looking for skinproducts
+2026-05-31 03:04:16,397 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:04:18,199 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=okay do you have a sunblock
+2026-05-31 03:04:36,174 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:04:38,368 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=how do i apply the summer glow sale
+2026-05-31 03:05:00,697 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:05:03,969 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=HESITANT kb=DOCS_FOUND query=guide me how should i apply the sunblock
+2026-05-31 03:05:40,530 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:05:42,781 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=okay what kind of electronics do you have
+2026-05-31 03:06:03,468 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:06:05,263 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=can you help me set up my laptop
+2026-05-31 03:06:19,545 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:06:23,958 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=what kind of models do youhave
+2026-05-31 03:06:33,368 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:06:34,800 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=it;s DELL
+2026-05-31 03:06:46,654 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:06:48,008 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=XPS
+2026-05-31 03:07:10,846 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:07:13,406 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=I want you to help me set it up
+2026-05-31 03:07:43,341 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:07:47,004 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=nothing tell me what to do from the start 
+2026-05-31 03:08:10,342 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:08:12,186 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=do you know my name
+2026-05-31 03:08:25,188 [WARNING] agents.supervisor — Supervisor LLM call failed (Expecting value: line 1 column 1 (char 0)) — using regex fallback.
+2026-05-31 03:08:38,511 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=jana
+2026-05-31 03:09:00,933 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:09:25,802 [WARNING] agents.general_agent — Layla reflection failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kj0bck6kffw97c4gx90zbqw4` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 95384, Requested 4790. Please try again in 2m30.336s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-05-31 03:09:25,804 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=you are a very nice person
+2026-05-31 03:10:09,333 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:10:10,315 [ERROR] agents.general_agent — Layla generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kj0bck6kffw97c4gx90zbqw4` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 95983, Requested 4641. Please try again in 8m59.135999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-05-31 03:10:10,316 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=tell me more about yourself
+2026-05-31 03:10:10,460 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-31 03:10:10,460 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-31 03:11:25,699 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:11:28,146 [ERROR] agents.general_agent — Layla generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kj0bck6kffw97c4gx90zbqw4` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 96479, Requested 5255. Please try again in 24m58.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-05-31 03:11:28,147 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=okay where are your locations
+2026-05-31 03:11:28,333 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-31 03:11:28,334 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-31 03:11:57,033 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_30700a81
+2026-05-31 03:11:59,312 [ERROR] agents.general_agent — Layla generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kj0bck6kffw97c4gx90zbqw4` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 97014, Requested 4655. Please try again in 24m2.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-05-31 03:11:59,312 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=where are the locations of shopeease
+2026-05-31 03:11:59,453 [WARNING] guardrails.toxicity_guardrail — PII (email) detected in agent output — redacted.
+2026-05-31 03:11:59,454 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: pii).
+2026-05-31 18:48:58,112 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 18:49:05,333 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 18:49:05,377 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 18:57:23,099 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_951def9a
+2026-05-31 18:57:30,596 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 18:57:31,108 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 18:57:33,992 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 20:24:52,665 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_951def9a
+2026-05-31 20:24:52,916 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 20:24:53,018 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 20:24:53,049 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 20:24:54,023 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 20:24:58,005 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 20:25:00,639 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=Tell me about the ProBook laptop
+2026-05-31 20:25:44,652 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_951def9a
+2026-05-31 20:25:46,990 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=What's good for oily skin?
+2026-05-31 20:26:10,097 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_951def9a
+2026-05-31 20:26:11,703 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=give m examples
+2026-05-31 20:26:25,139 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_951def9a
+2026-05-31 21:05:57,951 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 21:06:11,037 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 21:06:11,100 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 21:07:01,959 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:07:12,231 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 21:07:12,442 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 21:07:16,009 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 21:07:38,610 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:07:38,731 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 21:07:38,765 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 21:07:38,796 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 21:07:39,777 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 21:07:43,680 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 21:07:45,523 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=NEUTRAL kb=DOCS_FOUND query=What's good for oily skin?
+2026-05-31 21:08:08,464 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:08:10,531 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=hat goes well with the InstantPot?
+2026-05-31 21:08:32,545 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:08:36,002 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla invented the promo code SUMMER20 which is not in the KB docs.
+2026-05-31 21:08:36,346 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=Do you have any discounts?
+2026-05-31 21:09:21,852 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:09:25,835 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=Where are your stores in Cairo?
+2026-05-31 21:09:38,710 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:09:58,443 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:10:01,649 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=the location stored
+2026-05-31 21:10:18,698 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-001 session=session_CUST-001_3091e44f
+2026-05-31 21:10:22,732 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=VIP_RETURNING kb=DOCS_FOUND query=where are your stores in cairo
+2026-05-31 22:13:50,812 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 22:14:00,682 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 22:14:00,746 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 22:14:29,724 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.50 | customer=CUST-GUEST session=session_guest_701db806
+2026-05-31 22:14:37,017 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 22:14:37,541 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 22:14:40,444 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 22:15:07,017 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-GUEST session=session_guest_701db806
+2026-05-31 22:15:07,115 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 22:15:07,149 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 22:15:07,179 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 22:15:08,120 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 22:15:12,109 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 22:15:13,913 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=Tell me about the ProBook laptop
+2026-05-31 22:15:22,510 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.90 | customer=CUST-GUEST session=session_guest_701db806
+2026-05-31 22:15:24,179 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=no
+2026-05-31 22:15:41,290 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-GUEST session=session_guest_701db806
+2026-05-31 22:15:43,240 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=What's good for oily skin?"
+2026-05-31 22:16:00,559 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.60 | customer=CUST-GUEST session=session_guest_701db806
+2026-05-31 22:16:02,099 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=no
+2026-05-31 22:16:21,281 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.80 | customer=CUST-GUEST session=session_guest_701db806
+2026-05-31 22:16:22,638 [WARNING] agents.general_agent — Layla: Groq rate limit hit — using fallback | customer=CUST-GUEST
+2026-05-31 22:16:22,902 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=What goes well with the InstantPot?
+2026-05-31 22:19:23,267 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-05-31 22:19:29,923 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-05-31 22:19:29,953 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-05-31 22:19:47,234 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.60 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:19:54,112 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-05-31 22:19:54,311 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-05-31 22:19:57,599 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-05-31 22:21:36,734 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:21:36,862 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-05-31 22:21:36,900 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-05-31 22:21:36,928 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-05-31 22:21:37,926 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-05-31 22:21:41,806 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-05-31 22:21:46,348 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=What goes well with the InstantPot?
+2026-05-31 22:21:47,965 [INFO] guardrails.toxicity_guardrail — Profanity detected in output
+2026-05-31 22:21:47,966 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: profanity).
+2026-05-31 22:22:10,327 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:22:14,140 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: She invented a SUMMER20 promo code and expiration date not present in the knowledge base.
+2026-05-31 22:22:15,324 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=PRICE_SENSITIVE kb=DOCS_FOUND query=Do you have any discounts?
+2026-05-31 22:22:57,098 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.98 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:23:01,490 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla added invented address, phone, hours, services, and parking details for the Heliopolis store that are not present in the provided KB.
+2026-05-31 22:23:02,689 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=Where are your stores in Cairo?
+2026-05-31 22:23:29,766 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:23:36,873 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=i live in Giza so what are the shops near me
+2026-05-31 22:23:56,102 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:24:19,645 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=What payment methods do you accept?
+2026-05-31 22:24:49,850 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:24:59,870 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla added warranty details (parts and labor, on‑site service, free technical support) that aren't supported by the KB.
+2026-05-31 22:25:02,679 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=What's the warranty on the laptop? like proBook
+2026-05-31 22:25:43,801 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.98 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:25:48,174 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla added details about a “CookMaster Instant Pot” that aren’t present in the KB (the KB only lists “CookMaster Ins” without such description).
+2026-05-31 22:25:49,131 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=so What's trending right now?
+2026-05-31 22:26:16,489 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.98 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:26:30,521 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla added product-specific details (thermal carafe heat retention time and maintenance schedule) that are not supported by the provided KB.
+2026-05-31 22:26:37,997 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=can explain How do I use the EcoBrew Coffee Maker?
+2026-05-31 22:26:58,714 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.95 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:27:25,575 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla introduced the UltraLite Air 13 laptop and a 10% mouse discount, which are not present in the provided ShopEase knowledge base.
+2026-05-31 22:27:32,743 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=EXCITED kb=DOCS_FOUND query=I'm SO excited to get a new laptop!
+2026-05-31 22:28:13,314 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.99 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:28:21,059 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla gave unsupported specifications (DDR4 RAM and no DDR5 support) for the ProBook and introduced non‑catalog models not found in the knowledge base.
+2026-05-31 22:28:23,050 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=TECHNICAL kb=DOCS_FOUND query=Does the laptop support DDR5 RAM?
+2026-05-31 22:29:10,015 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:29:26,049 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla provided detailed website navigation steps that are not supported by the provided KB docs.
+2026-05-31 22:29:33,659 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=FRUSTRATED kb=DOCS_FOUND query=Your website is so confusing! help me through it 
+2026-05-31 22:30:31,607 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:30:36,016 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla suggested specific ShopEase accessories and products (e.g., Silicone Pot Lid, EcoBrew Coffee Maker) that are not present in the provided knowledge base.
+2026-05-31 22:30:37,622 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=VIP_RETURNING kb=DOCS_FOUND query=okay now I I bought the InstantPot last month, what goes wit
+2026-05-31 22:30:39,332 [INFO] guardrails.toxicity_guardrail — Profanity detected in output
+2026-05-31 22:30:39,333 [INFO] guardrails.toxicity_guardrail — Output guardrail sanitised response (category: profanity).
+2026-05-31 22:31:18,591 [INFO] agents.supervisor — Supervisor | intent=policy_returns order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:31:20,172 [INFO] agents.policy_returns — Generated RMA RMA-34596 for customer CUST-GUEST
+2026-05-31 22:31:40,658 [INFO] agents.policy_returns — Policy & Returns Agent responded | customer=CUST-GUEST action=APPROVE rma=RMA-34596
+2026-05-31 22:32:36,957 [INFO] agents.supervisor — Supervisor | intent=order_lookup order_id=None confidence=0.86 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:32:38,635 [INFO] agents.order_lookup — Nora planner: 1 tasks planned for customer CUST-GUEST
+2026-05-31 22:32:38,637 [ERROR] agents.order_lookup — Nora scheduler task=T1 tool=send_otp FAILED: Customer CUST-GUEST not found in customer database.
+2026-05-31 22:32:38,638 [INFO] agents.order_lookup — Nora scheduler complete: 1 tasks in 1 waves
+2026-05-31 22:32:39,163 [INFO] agents.order_lookup — Nora joiner decision: CLARIFY reason: We could not locate the customer's account in the database, so we need verification details to identify the order.
+2026-05-31 22:33:09,305 [INFO] agents.supervisor — Supervisor | intent=policy_returns order_id=RD-10001 confidence=0.96 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:33:09,870 [INFO] guardrails.policy_guardrail — Policy violation POL-002: Return request 401 days after delivery (limit 30)
+2026-05-31 22:33:10,979 [INFO] agents.policy_returns — Policy & Returns Agent responded | customer=CUST-GUEST action=DECLINE rma=N/A
+2026-05-31 22:33:36,955 [INFO] agents.supervisor — Supervisor | intent=policy_returns order_id=ORD-10001 confidence=0.96 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:33:37,535 [INFO] guardrails.policy_guardrail — Policy violation POL-002: Return request 401 days after delivery (limit 30)
+2026-05-31 22:33:47,202 [INFO] agents.policy_returns — Policy & Returns Agent responded | customer=CUST-GUEST action=DECLINE rma=N/A
+2026-05-31 22:34:45,613 [INFO] agents.supervisor — Supervisor | intent=general order_id=ORD-10001 confidence=0.96 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:34:48,889 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla listed a toner (SkinBalance Oil‑Control Toner) that is not present in the provided KB docs.
+2026-05-31 22:34:51,004 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=FRUSTRATED kb=DOCS_FOUND query=fine what are the kind of skin products you have
+2026-05-31 22:36:33,695 [INFO] agents.supervisor — Supervisor | intent=escalation order_id=ORD-10001 confidence=0.96 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:36:35,839 [INFO] agents.escalation — Escalation Agent | ticket=TKT-FF16C customer=CUST-GUEST reason=Customer requested to speak with a manager
+2026-05-31 22:37:59,699 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.99 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:38:06,047 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=my name is jae how do i create my an account on the website
+2026-05-31 22:38:28,695 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_a41ee6a6
+2026-05-31 22:38:30,073 [WARNING] agents.general_agent — Layla: Groq rate limit hit — using fallback | customer=CUST-GUEST
+2026-05-31 22:38:33,967 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla provided a phone number (19123) that is not in the knowledge base, inventing a ShopEase-specific fact.
+2026-05-31 22:38:36,147 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=NEUTRAL kb=DOCS_FOUND query=very nice tahnk you
+2026-06-01 03:12:32,565 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-06-01 03:12:39,242 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-06-01 03:12:39,281 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-06-01 03:13:07,766 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.75 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:13:14,295 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-06-01 03:13:14,839 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-06-01 03:13:17,635 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-06-01 03:13:38,764 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:13:38,923 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-06-01 03:13:38,966 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-06-01 03:13:38,989 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-06-01 03:13:39,970 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-06-01 03:13:43,897 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-06-01 03:13:46,231 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla provided product details and pricing (Acne‑Fighting Power Trio and SunShield price) that are not present in the knowledge base.
+2026-06-01 03:13:47,182 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=skincare products?
+2026-06-01 03:14:07,319 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.96 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:14:09,683 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=my name is jana
+2026-06-01 03:14:19,229 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.96 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:14:22,757 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=it is nice to meet you
+2026-06-01 03:14:43,040 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:14:45,319 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla added product packs (Study Essentials Pack, Everyday School Supplies) that are not documented in the knowledge base.
+2026-06-01 03:14:46,443 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=HESITANT kb=DOCS_FOUND query=i don't know do you have things for school 
+2026-06-01 03:15:33,939 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:16:04,099 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.98 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:16:09,195 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=where are your locations in Giza
+2026-06-01 03:16:47,655 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:16:50,392 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla added details (Ramadan favourite for CookMaster Instant Pot and niacinamide in SunShield sunscreen) that aren't in the KB.
+2026-06-01 03:16:51,307 [INFO] agents.general_agent — Layla responded | customer=CUST-GUEST mode=CASUAL_BROWSER kb=DOCS_FOUND query=most popular products
+2026-06-01 03:17:03,856 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-GUEST session=session_guest_eea771e7
+2026-06-01 03:37:10,489 [INFO] evaluation.metrics — Evaluation database initialised at ./data/eval_metrics.db
+2026-06-01 03:37:18,535 [INFO] memory.short_term — Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)
+2026-06-01 03:37:18,584 [INFO] graph.workflow — LangGraph workflow compiled successfully.
+2026-06-01 03:37:36,335 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.65 | customer=CUST-001 session=session_CUST-001_a7cb95e9
+2026-06-01 03:37:44,395 [INFO] rag.embeddings — Loading embedding model: all-MiniLM-L6-v2 (cache: E:\hf_cache)
+2026-06-01 03:37:44,575 [WARNING] huggingface_hub.utils._http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-06-01 03:37:48,210 [INFO] rag.embeddings — Embedding model loaded successfully.
+2026-06-01 03:37:48,945 [INFO] rag.retriever — ChromaDB client opened at ./data/chroma_db
+2026-06-01 03:37:48,992 [INFO] rag.retriever — BM25 index built with 124 documents.
+2026-06-01 03:37:49,016 [INFO] rag.embeddings — Loading cross-encoder reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 (cache: E:\hf_cache)
+2026-06-01 03:37:49,972 [WARNING] sentence_transformers.util.decorators — The Transformer `cache_dir` argument is deprecated. Please pass `cache_dir` via `model_kwargs`, `processor_kwargs`, and/or `config_kwargs` instead.
+2026-06-01 03:37:54,212 [INFO] rag.embeddings — Cross-encoder loaded successfully.
+2026-06-01 03:37:55,759 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=CASUAL_BROWSER kb=DOCS_FOUND query=hii
+2026-06-01 03:38:16,851 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-001 session=session_CUST-001_a7cb95e9
+2026-06-01 03:38:19,526 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=CASUAL_BROWSER kb=DOCS_FOUND query=nootbookes?
+2026-06-01 03:38:33,556 [INFO] agents.supervisor — Supervisor | intent=general order_id=None confidence=0.97 | customer=CUST-001 session=session_CUST-001_a7cb95e9
+2026-06-01 03:38:37,791 [INFO] agents.general_agent — Layla reflection → NEEDS_REVISION: Layla provided product details (e.g., ProTab tablet, Smart Pen set, backpack, headphones) and prices that are not present in the knowledge base.
+2026-06-01 03:38:39,025 [INFO] agents.general_agent — Layla responded | customer=CUST-001 mode=CASUAL_BROWSER kb=DOCS_FOUND query=no notebooks for school

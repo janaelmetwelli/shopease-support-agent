@@ -9,7 +9,7 @@
     "id": "FAQ-002",
     "category": "Orders",
     "question": "Can I change or cancel my order after placing it?",
-    "answer": "Orders can be modified or cancelled within 1 hour of placement, while they are still in 'Processing' status. To cancel, go to 'My Orders', select the order, and click 'Cancel Order'. Once an order moves to 'Shipped' status, it can no longer be cancelled — you'll need to initiate a return after delivery."
+    "answer": "Yes, you can modify or cancel an existing order through our AI support agent while the order is still in 'Processing' status. Available modifications include: cancelling the order, updating the shipping address, changing item quantities, or removing items. Simply chat with our agent and provide your order ID. Once an order moves to 'Shipped' or any later status, modifications are no longer possible and you will need to initiate a return after delivery. Note: new orders can only be placed through our website or mobile app — the agent cannot create new orders."
   },
   {
     "id": "FAQ-003",

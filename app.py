@@ -14,6 +14,8 @@ import sys
 import time
 import uuid
 from pathlib import Path
+import os
+os.environ["HF_TOKEN"] = settings.hf_token
 
 # ── Force UTF-8 on Windows ────────────────────────────────────────────────────
 if sys.platform == "win32":
@@ -50,6 +52,16 @@ def bootstrap():
 
     from graph.workflow import get_graph
     get_graph()
+
+    # Pre-warm all model singletons — eliminates first-message cold-start latency.
+    # ChatGroq clients are cheap; the embedding model (SentenceTransformer) is the
+    # slow load, so get_retriever() is the most important call here.
+    from agents import supervisor, general_agent, order_lookup, policy_returns, escalation
+    from rag.retriever import get_retriever
+    for _mod in (supervisor, general_agent, order_lookup, policy_returns, escalation):
+        _mod._get_llm()
+    get_retriever()
+
     print("✓ ShopEase agent ready.")
 
 bootstrap()
@@ -151,7 +163,8 @@ def chat(
     history: list[dict],
     customer_id: str,
     session_id: str,
-) -> tuple[list[dict], str, str]:
+    metadata: dict,
+) -> tuple[list[dict], str, str, dict]:
     """
     Process one chat turn.
 
@@ -159,9 +172,10 @@ def chat(
         updated_history  — the full chat history (gradio messages format)
         agent_label      — which agent responded
         session_id       — (possibly initialised on first turn)
+        metadata         — carried-forward metadata (identity_verified, pending_otp, etc.)
     """
     if not user_message.strip():
-        return history, "—", session_id
+        return history, "—", session_id, metadata
 
     # Initialise session ID on first message
     if not session_id:
@@ -176,6 +190,7 @@ def chat(
         session_id=session_id,
         user_message=user_message,
     )
+    state["metadata"] = metadata  # carry identity_verified / pending_otp across turns
 
     try:
         result = graph.invoke(state, config=config)
@@ -187,7 +202,7 @@ def chat(
             {"role": "user", "content": user_message},
             {"role": "assistant", "content": ai_msg},
         ]
-        return history, agent_label, session_id
+        return history, agent_label, session_id, metadata
 
     # Extract AI reply
     ai_reply = next(
@@ -219,13 +234,13 @@ def chat(
         {"role": "assistant", "content": ai_reply + footer},
     ]
 
-    return history, agent_label, session_id
+    return history, agent_label, session_id, result.get("metadata", {})
 
 
-def reset_session(customer_id: str) -> tuple[list, str, str, str]:
+def reset_session(customer_id: str) -> tuple[list, str, str, str, dict]:
     """Clear chat history and start a fresh session."""
     new_session_id = f"session_{customer_id.strip() or 'guest'}_{uuid.uuid4().hex[:8]}"
-    return [], "—", new_session_id, ""
+    return [], "—", new_session_id, "", {}
 
 
 # ── Build Gradio UI ────────────────────────────────────────────────────────────
@@ -267,6 +282,7 @@ def build_app() -> gr.Blocks:
 
         # ── State ─────────────────────────────────────────────────────────────
         session_state = gr.State(value="")
+        metadata_state = gr.State(value={})
 
         # ── Header ────────────────────────────────────────────────────────────
         with gr.Row(elem_id="shopease-header"):
@@ -371,31 +387,31 @@ def build_app() -> gr.Blocks:
 
         # ── Event wiring ──────────────────────────────────────────────────────
 
-        def submit_message(user_msg, history, cid, sid):
+        def submit_message(user_msg, history, cid, sid, meta):
             if not user_msg.strip():
-                return history, "—", sid, ""
-            new_history, agent_lbl, new_sid = chat(user_msg, history, cid, sid)
-            return new_history, agent_lbl, new_sid, ""   # clear input box
+                return history, "—", sid, "", meta
+            new_history, agent_lbl, new_sid, new_meta = chat(user_msg, history, cid, sid, meta)
+            return new_history, agent_lbl, new_sid, "", new_meta  # clear input box
 
         # Send on button click
         send_btn.click(
             fn=submit_message,
-            inputs=[msg_input, chatbot, customer_id_input, session_state],
-            outputs=[chatbot, agent_badge, session_state, msg_input],
+            inputs=[msg_input, chatbot, customer_id_input, session_state, metadata_state],
+            outputs=[chatbot, agent_badge, session_state, msg_input, metadata_state],
         )
 
         # Send on Enter key
         msg_input.submit(
             fn=submit_message,
-            inputs=[msg_input, chatbot, customer_id_input, session_state],
-            outputs=[chatbot, agent_badge, session_state, msg_input],
+            inputs=[msg_input, chatbot, customer_id_input, session_state, metadata_state],
+            outputs=[chatbot, agent_badge, session_state, msg_input, metadata_state],
         )
 
         # Reset session
         reset_btn.click(
             fn=reset_session,
             inputs=[customer_id_input],
-            outputs=[chatbot, agent_badge, session_state, msg_input],
+            outputs=[chatbot, agent_badge, session_state, msg_input, metadata_state],
         )
 
     return demo
