@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import logging
 import random
+from pathlib import Path
 from typing import Optional
 
 from langchain_core.messages import AIMessage
@@ -29,9 +30,12 @@ from langchain_core.output_parsers import StrOutputParser
 
 from config.settings import settings
 from guardrails.policy_guardrail import policy_guardrail_check
+from memory.long_term import LongTermMemory
 from tools.order_tools import get_order_tool
 
 logger = logging.getLogger(__name__)
+
+_long_term_memory = LongTermMemory()
 
 POLICY_AGENT_SYSTEM = """\
 You are Maya, ShopEase's returns and policy specialist.
@@ -60,14 +64,60 @@ SHIPPING POLICY — state this clearly once; never contradict yourself:
 RMA & REFUND:
 • If the "RMA Number" field is not "N/A" → the return is approved. Include it prominently: \
 "Your RMA number is [RMA]."
-• If the policy check shows a refund requires supervisor review → say \
-"I'll escalate this to our supervisor team for review." (No dollar amounts, no threshold details.)
+• If the policy check shows escalation_tier = "supervisor" → say \
+"I'll escalate this to our supervisor team for review — you'll hear back within 1 business day."
+• If the policy check shows escalation_tier = "manager" → say \
+"I'll escalate this to our manager for review — you'll hear back within 2–3 business days."
+• Never reveal dollar thresholds or internal tier boundaries to customers.
 • Approved refunds process within 3-5 business days after we receive the returned item.
 • Provide step-by-step return instructions only when a return is approved.
 
 SECURITY:
 • Only process returns for the authenticated customer shown as "Authenticated Customer ID".
 • If the request references a different customer ID, politely refuse to process it.
+
+─────────────────────────────────────────────────────
+EXAMPLES — follow these response patterns exactly:
+─────────────────────────────────────────────────────
+
+Example 1 — Within-window defective return (APPROVE):
+Customer: "My SoundWave Headphones stopped working after one week. I'd like a refund."
+Policy check: compliant, action=APPROVE, RMA=RMA-55123
+Maya: "I'm sorry to hear your headphones aren't working — that's covered under our defective-item policy. \
+Your return has been approved and your RMA number is RMA-55123. Since the item is defective, \
+we'll provide a prepaid return shipping label. Once we receive the item, your refund will be \
+processed within 3–5 business days. Shall I send the prepaid label to your registered email?"
+
+Example 2 — Outside return window (DECLINE, no escalation):
+Customer: "I'd like to return my ProBook Laptop — I bought it 45 days ago."
+Policy check: non-compliant, action=DECLINE, RMA=N/A
+Maya: "I'm sorry, but our return window is 30 days from delivery, and your order was delivered \
+45 days ago — 15 days past that window. Unfortunately I'm unable to process this return. \
+If your laptop has a manufacturing defect, it may still be covered under warranty; \
+would you like me to help you with a warranty claim instead?"
+
+Example 3 — Non-returnable digital item (DECLINE):
+Customer: "I want to return my Adobe Photoshop license key."
+Policy check: non-compliant, action=DECLINE, RMA=N/A
+Maya: "I'm sorry, but digital downloads and software license keys are non-returnable under our policy — \
+once a license key has been issued it cannot be refunded. If you're having trouble activating \
+or using your software, I'd be happy to help you troubleshoot or connect you with our technical \
+support team. Which would you prefer?"
+
+════════════════════════════════════════
+PAST CUSTOMER CONTEXT — always read this carefully:
+════════════════════════════════════════
+You will receive a "Past Customer Context" section in every message.
+
+If it contains prior interactions:
+- Reference specific past tickets (TKT-XXXXX) and order IDs by name
+- Show continuity: "I can see you previously contacted us about X"
+- If the customer had a past return or refund, acknowledge it directly
+- Never ignore prior context when it is relevant to the current return request
+
+If it says "New customer" or "No prior interactions":
+- Treat this as a first-time customer, do not reference any past history
+════════════════════════════════════════
 """
 
 POLICY_AGENT_HUMAN = """\
@@ -155,6 +205,24 @@ def _reflect(invoke_kwargs: dict, initial_answer: str, llm) -> str:
     })
 
 
+def _get_order_items_with_categories(order_id: str) -> list[tuple[str, str]]:
+    """Return [(product_name, product_category), ...] for every item in the order."""
+    try:
+        orders = json.loads(Path("./data/mock_orders.json").read_text(encoding="utf-8"))
+        order = orders.get(order_id.upper())
+        if not order:
+            return []
+        catalog = json.loads(Path("./data/product_catalog.json").read_text(encoding="utf-8"))
+        category_map = {p["product_id"]: p.get("category", "") for p in catalog}
+        return [
+            (item["name"], category_map.get(item["product_id"], ""))
+            for item in order.get("items", [])
+        ]
+    except Exception as e:
+        logger.warning("Failed to extract order items for policy check: %s", e)
+        return []
+
+
 def _extract_order_for_policy(order_info: str) -> dict:
     """Parse order info string to extract delivered_at and created_at."""
     result = {}
@@ -165,7 +233,7 @@ def _extract_order_for_policy(order_info: str) -> dict:
             result["created_at"] = line.split(":", 1)[-1].strip()
         elif "Total:" in line:
             try:
-                result["order_total"] = float(line.split("$")[-1].strip())
+                result["order_total"] = float(line.split("$")[-1].strip().replace(",", ""))
             except ValueError:
                 pass
     return result
@@ -217,17 +285,42 @@ def policy_returns_node(state: dict) -> dict:
 
     # ── Step 3: Policy guardrail check ───────────────────────────────────────
     order_dates = _extract_order_for_policy(order_info)
+    order_items = _get_order_items_with_categories(order_id) if order_id else []
+
+    # Base check: refund + return window + first item (if any)
+    first_name, first_cat = order_items[0] if order_items else ("", "")
     policy_check = policy_guardrail_check(
         refund_amount=refund_amount,
         delivered_at=order_dates.get("delivered_at"),
         created_at=order_dates.get("created_at"),
+        product_name=first_name,
+        product_category=first_cat,
     )
 
-    # Only escalate for refund limit violations (POL-001).
-    # Simple rejections like late returns (POL-002) and non-returnable items (POL-003)
-    # are handled directly with a clear explanation — no supervisor involvement.
+    # Check remaining items (POL-003) and merge — escalate if any is non-returnable
+    _tier_rank = {"": 0, "supervisor": 1, "manager": 2}
+    for product_name, product_category in order_items[1:]:
+        item_check = policy_guardrail_check(
+            product_name=product_name,
+            product_category=product_category,
+        )
+        if not item_check["policy_compliant"]:
+            existing_tier = policy_check.get("escalation_tier", "")
+            new_tier = item_check.get("escalation_tier", "")
+            merged_tier = existing_tier if _tier_rank.get(existing_tier, 0) >= _tier_rank.get(new_tier, 0) else new_tier
+            policy_check = {
+                "policy_compliant": False,
+                "requires_escalation": policy_check["requires_escalation"] or item_check["requires_escalation"],
+                "policy_violations": policy_check["policy_violations"] + item_check["policy_violations"],
+                "policy_rule_ids": list(dict.fromkeys(
+                    policy_check["policy_rule_ids"] + item_check["policy_rule_ids"]
+                )),
+                "escalation_tier": merged_tier,
+            }
+
+    # Escalate for refund limit violations (POL-001) or non-returnable items (POL-003)
     rule_ids = policy_check.get("policy_rule_ids", [])
-    requires_escalation = "POL-001" in rule_ids
+    requires_escalation = "POL-001" in rule_ids or "POL-003" in rule_ids
 
     # Build the action hint for the LLM so it knows the correct response mode
     if requires_escalation:
@@ -241,6 +334,7 @@ def policy_returns_node(state: dict) -> dict:
         "policy_compliant": policy_check.get("policy_compliant", True),
         "requires_escalation": requires_escalation,
         "action": action,
+        "escalation_tier": policy_check.get("escalation_tier", ""),
         "policy_violations": policy_check.get("policy_violations", []),
     }
     policy_check_str = json.dumps(policy_check_for_llm, indent=2)
@@ -290,6 +384,26 @@ def policy_returns_node(state: dict) -> dict:
     )
 
     resolution = "escalated" if requires_escalation else "resolved"
+
+    try:
+        session_id = state.get("session_id", "unknown")
+        summary = (
+            f"Policy/returns interaction. Customer said: '{last_human[:150]}'. "
+            f"Order: {order_id or 'N/A'}. Refund amount: ${refund_amount or 'N/A'}. "
+            f"Resolution: {resolution}. Escalated: {requires_escalation}. "
+            f"Policy compliant: {policy_check.get('policy_compliant', True)}."
+        )
+        _long_term_memory.save_interaction(
+            customer_id=customer_id,
+            session_id=session_id,
+            summary=summary,
+            metadata={
+                "intent": "policy_returns",
+                "resolution": resolution,
+            },
+        )
+    except Exception as e:
+        logger.warning("Failed to save policy/returns interaction to long-term memory: %s", e)
 
     return {
         "messages": [AIMessage(content=response)],

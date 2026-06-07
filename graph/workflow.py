@@ -1,3 +1,4 @@
+
 """
 LangGraph Workflow — E-Commerce Customer Support Agent
 
@@ -93,7 +94,7 @@ class CustomerSupportState(TypedDict):
     # ── Evaluation ────────────────────────────────────────────────────────
     start_time: float
     latency_ms: float
-    metadata: Annotated[dict, lambda old, new: {**old, **new}]
+    metadata: dict
 
 
 # ── Default state factory ──────────────────────────────────────────────────────
@@ -154,22 +155,10 @@ def route_after_supervisor(state: CustomerSupportState) -> str:
     return intent_map.get(state.get("intent", "unknown"), "general")
 
 
-def route_after_agent(
-    state: CustomerSupportState,
-) -> Literal["supervisor", "escalation", "output_guardrail"]:
-    """
-    Shared exit router for order_lookup, policy_returns, and general.
-    Escalation is the only agent that bypasses this and goes straight to output_guardrail.
-
-    Checks (in priority order):
-      1. requires_escalation=True  → escalation node
-      2. resolution_status == 'needs_rerouting'  → back to supervisor for re-classification
-      3. otherwise  → output_guardrail
-    """
+def route_after_policy(state: CustomerSupportState) -> str:
+    """Escalate if policy guardrail triggered, otherwise go to output check."""
     if state.get("requires_escalation", False):
         return "escalation"
-    if state.get("resolution_status") == "needs_rerouting":
-        return "supervisor"
     return "output_guardrail"
 
 
@@ -239,19 +228,23 @@ def create_graph():
         },
     )
 
-    # order_lookup, policy_returns, general: unified post-agent routing
-    for _agent in ("order_lookup", "policy_returns", "general"):
-        builder.add_conditional_edges(
-            _agent,
-            route_after_agent,
-            {
-                "supervisor": "supervisor",
-                "escalation": "escalation",
-                "output_guardrail": "output_guardrail",
-            },
-        )
+    # order_lookup → output_guardrail (always)
+    builder.add_edge("order_lookup", "output_guardrail")
 
-    # escalation → output_guardrail (always — no re-routing loop)
+    # general → output_guardrail (always)
+    builder.add_edge("general", "output_guardrail")
+
+    # policy_returns → escalation OR output_guardrail
+    builder.add_conditional_edges(
+        "policy_returns",
+        route_after_policy,
+        {
+            "escalation": "escalation",
+            "output_guardrail": "output_guardrail",
+        },
+    )
+
+    # escalation → output_guardrail (always)
     builder.add_edge("escalation", "output_guardrail")
 
     # output_guardrail → finalize → END

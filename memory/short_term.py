@@ -35,12 +35,15 @@ def get_checkpointer():
     try:
         from langgraph.checkpoint.sqlite import SqliteSaver
         conn = sqlite3.connect(str(db_path), check_same_thread=False)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=NORMAL")
         _checkpointer = SqliteSaver(conn)
         logger.info("Short-term memory: SqliteSaver at %s", db_path)
     except ImportError:
         from langgraph.checkpoint.memory import MemorySaver
         _checkpointer = MemorySaver()
-        logger.info("Short-term memory: in-memory MemorySaver (install langgraph[sqlite] for persistence)")
+        logger.warning("Short-term memory: in-memory MemorySaver (install langgraph-checkpoint-sqlite for persistence)")
+        print("WARNING: langgraph-checkpoint-sqlite is not installed. Session memory will not persist across restarts.")
 
     return _checkpointer
 

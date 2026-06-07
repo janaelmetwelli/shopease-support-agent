@@ -17,9 +17,8 @@ Workflow:
 from __future__ import annotations
 
 import logging
-import random
-import string
 import time
+import uuid
 from datetime import date, timedelta
 
 from langchain_core.messages import AIMessage
@@ -27,8 +26,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 from config.settings import settings
+from memory.long_term import LongTermMemory
 
 logger = logging.getLogger(__name__)
+
+_long_term_memory = LongTermMemory()
 
 ESCALATION_AGENT_SYSTEM = """\
 You are a Senior Support Specialist at ShopEase with authority to handle escalations.
@@ -48,6 +50,20 @@ Always:
 - Do NOT over-promise specific outcomes (like a guaranteed refund) without authority
 
 Keep the response warm and under 4 paragraphs.
+
+════════════════════════════════════════
+PAST CUSTOMER CONTEXT — always read this carefully:
+════════════════════════════════════════
+You will receive a "Past Customer Context" section in every message.
+
+If it contains prior interactions:
+- Reference specific past tickets (TKT-XXXXX) and order IDs by name
+- Show continuity: "I can see you contacted us last week about X — let me make sure that history is included in this escalation"
+- Never ignore prior context when it is directly relevant
+
+If it says "New customer" or "No prior interactions":
+- Treat this as a first-time customer, do not reference any past history
+════════════════════════════════════════
 """
 
 ESCALATION_AGENT_HUMAN = """\
@@ -55,6 +71,7 @@ Customer ID: {customer_id}
 Escalation Ticket ID: {ticket_id}
 Escalation Reason: {escalation_reason}
 Estimated Resolution: {eta}
+RMA Number: {rma_number}
 
 Order Information (if applicable):
 {order_info}
@@ -88,14 +105,14 @@ def _get_llm():
 
 
 def _generate_ticket_id() -> str:
-    """Generate a ticket ID like TKT-A3F9X."""
-    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
+    """Generate a ticket ID like TKT-A3F9XB2C."""
+    suffix = uuid.uuid4().hex[:8].upper()
     return f"TKT-{suffix}"
 
 
 def _get_history_text(messages: list) -> str:
     lines = []
-    for m in messages[:-1]:
+    for m in messages:
         role = getattr(m, "type", "unknown")
         if role == "human":
             lines.append(f"Customer: {m.content}")
@@ -139,7 +156,7 @@ def _determine_escalation_reason(state: dict) -> str:
     """Build a human-readable escalation reason from state."""
     reasons = []
     intent = state.get("intent", "")
-    violations = state.get("metadata", {}).get("policy_violations", [])
+    violations = state.get("policy_violations", [])
     requires_escalation = state.get("requires_escalation", False)
 
     if intent == "escalation":
@@ -160,6 +177,9 @@ def _determine_eta(state: dict) -> str:
         return "2–3 business days (manager review required for large refunds)"
     if refund_amount and refund_amount > 500:
         return "1 business day (supervisor approval needed)"
+    violations = state.get("policy_violations", [])
+    if any("return window" in v.lower() or "POL-002" in v for v in violations):
+        return "2–3 business days (return window exception requires manager approval)"
     return "4 business hours"
 
 
@@ -197,8 +217,14 @@ def escalation_node(state: dict) -> dict:
             pass
 
     # Policy notes
-    policy_violations = metadata.get("policy_violations", [])
+    policy_violations = state.get("policy_violations", [])
     policy_notes = "\n".join(f"• {v}" for v in policy_violations) if policy_violations else "None"
+
+    # RMA number for return-related escalations
+    is_return_escalation = any(
+        "return window" in v.lower() or "POL-002" in v for v in policy_violations
+    )
+    rma_number = f"RMA-{uuid.uuid4().hex[:8].upper()}" if is_return_escalation else None
 
     # ── Generate response ─────────────────────────────────────────────────────
     try:
@@ -213,6 +239,7 @@ def escalation_node(state: dict) -> dict:
             "ticket_id": ticket_id,
             "escalation_reason": escalation_reason,
             "eta": eta,
+            "rma_number": rma_number or "N/A",
             "order_info": order_info,
             "policy_notes": policy_notes,
             "past_context": past_context,
@@ -230,21 +257,21 @@ def escalation_node(state: dict) -> dict:
         logger.error("Escalation agent LLM call failed: %s", e)
         response = (
             f"I'm escalating your case to our senior support team (Ticket: {ticket_id}). "
-            "A specialist will contact you within 4 business hours. "
+            f"A specialist will contact you within {eta}. "
             "We sincerely apologise for the inconvenience."
         )
 
     # ── Save escalation to long-term memory ───────────────────────────────────
     try:
-        from memory.long_term import LongTermMemory
         session_id = state.get("session_id", "unknown")
         summary = (
             f"Escalation ticket {ticket_id} created. "
             f"Reason: {escalation_reason}. "
             f"Order: {order_id or 'N/A'}. "
+            f"Customer complaint: {last_human}. "
             f"Customer requested manager review. ETA: {eta}."
         )
-        LongTermMemory().save_interaction(
+        _long_term_memory.save_interaction(
             customer_id=customer_id,
             session_id=session_id,
             summary=summary,
@@ -262,9 +289,12 @@ def escalation_node(state: dict) -> dict:
         ticket_id, customer_id, escalation_reason[:60],
     )
 
-    return {
+    result = {
         "messages": [AIMessage(content=response)],
         "agent_used": "escalation",
         "resolution_status": "escalated",
         "escalation_ticket_id": ticket_id,
     }
+    if rma_number:
+        result["rma_number"] = rma_number
+    return result

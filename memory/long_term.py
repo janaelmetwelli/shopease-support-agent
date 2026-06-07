@@ -69,7 +69,7 @@ class LongTermMemory:
     ) -> None:
         """Embed and store a session summary for a customer."""
         ts = datetime.utcnow().isoformat()
-        doc_id = f"mem_{customer_id}_{session_id}_{int(time.time())}"
+        doc_id = f"mem_{customer_id}_{session_id}_{int(time.time() * 1000)}"
 
         meta = {
             "customer_id": customer_id,
@@ -125,7 +125,7 @@ class LongTermMemory:
             result["distances"][0],
         ):
             relevance = 1.0 - dist
-            if relevance > 0.3:  # only return reasonably relevant memories
+            if relevance > 0.4:  # only return reasonably relevant memories
                 memories.append(
                     {
                         "content": doc,
@@ -136,6 +136,7 @@ class LongTermMemory:
                     }
                 )
 
+        memories.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
         return memories
 
     def format_for_prompt(self, memories: list[dict]) -> str:
@@ -146,7 +147,7 @@ class LongTermMemory:
         lines = ["**Past interactions with this customer:**"]
         for mem in memories:
             ts = mem.get("timestamp", "")[:10]  # date only
-            lines.append(f"• [{ts}] {mem['content']}")
+            lines.append(f"• [{ts}] [resolution: {mem.get('metadata', {}).get('resolution', 'unknown')}] {mem['content']}")
         return "\n".join(lines)
 
     def get_customer_history_count(self, customer_id: str) -> int:

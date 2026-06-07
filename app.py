@@ -15,7 +15,7 @@ import time
 import uuid
 from pathlib import Path
 import os
-os.environ["HF_TOKEN"] = settings.hf_token
+
 
 # ── Force UTF-8 on Windows ────────────────────────────────────────────────────
 if sys.platform == "win32":
@@ -44,6 +44,7 @@ logger = logging.getLogger(__name__)
 def bootstrap():
     """Initialise settings, ensure dirs, prime the graph."""
     from config.settings import settings
+    os.environ["HF_TOKEN"] = settings.hf_token
     settings.apply_langsmith_env()
     settings.ensure_dirs()
 
