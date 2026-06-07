@@ -30,9 +30,12 @@ from langchain_core.output_parsers import StrOutputParser
 
 from config.settings import settings
 from guardrails.policy_guardrail import policy_guardrail_check
+from memory.long_term import LongTermMemory
 from tools.order_tools import get_order_tool
 
 logger = logging.getLogger(__name__)
+
+_long_term_memory = LongTermMemory()
 
 POLICY_AGENT_SYSTEM = """\
 You are Maya, ShopEase's returns and policy specialist.
@@ -381,6 +384,26 @@ def policy_returns_node(state: dict) -> dict:
     )
 
     resolution = "escalated" if requires_escalation else "resolved"
+
+    try:
+        session_id = state.get("session_id", "unknown")
+        summary = (
+            f"Policy/returns interaction. Customer said: '{last_human[:150]}'. "
+            f"Order: {order_id or 'N/A'}. Refund amount: ${refund_amount or 'N/A'}. "
+            f"Resolution: {resolution}. Escalated: {requires_escalation}. "
+            f"Policy compliant: {policy_check.get('policy_compliant', True)}."
+        )
+        _long_term_memory.save_interaction(
+            customer_id=customer_id,
+            session_id=session_id,
+            summary=summary,
+            metadata={
+                "intent": "policy_returns",
+                "resolution": resolution,
+            },
+        )
+    except Exception as e:
+        logger.warning("Failed to save policy/returns interaction to long-term memory: %s", e)
 
     return {
         "messages": [AIMessage(content=response)],

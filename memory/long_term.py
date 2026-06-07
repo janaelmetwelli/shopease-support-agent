@@ -136,6 +136,7 @@ class LongTermMemory:
                     }
                 )
 
+        memories.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
         return memories
 
     def format_for_prompt(self, memories: list[dict]) -> str:
@@ -146,7 +147,7 @@ class LongTermMemory:
         lines = ["**Past interactions with this customer:**"]
         for mem in memories:
             ts = mem.get("timestamp", "")[:10]  # date only
-            lines.append(f"• [{ts}] {mem['content']}")
+            lines.append(f"• [{ts}] [resolution: {mem.get('metadata', {}).get('resolution', 'unknown')}] {mem['content']}")
         return "\n".join(lines)
 
     def get_customer_history_count(self, customer_id: str) -> int:

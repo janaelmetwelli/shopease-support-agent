@@ -194,7 +194,8 @@ def supervisor_node(state: dict) -> dict:
                 (m.content for m in reversed(messages) if getattr(m, "type", "") == "human"),
                 "",
             )
-            memories = ltm.recall(customer_id=customer_id, query=last_human_text)
+            recall_query = f"{intent} {order_id or ''} {last_human_text[:100]}".strip()
+            memories = ltm.recall(customer_id=customer_id, query=recall_query)
             past_context = ltm.format_for_prompt(memories)
     except Exception as e:
         logger.debug("Long-term memory recall skipped: %s", e)

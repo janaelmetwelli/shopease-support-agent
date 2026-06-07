@@ -38,7 +38,11 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
+from memory.long_term import LongTermMemory
+
 console = Console()
+
+_long_term_memory = LongTermMemory()
 
 # ── Logging ────────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -106,6 +110,7 @@ def run_chat(customer_id: str, session_id: str | None = None) -> None:
         )
     )
 
+    result = None
     while True:
         try:
             user_input = Prompt.ask("\n[bold green]You[/bold green]").strip()
@@ -161,6 +166,37 @@ def run_chat(customer_id: str, session_id: str | None = None) -> None:
         # Show guardrail block if triggered
         if not result.get("guardrail_passed", True):
             console.print("[red]⚠️  Input guardrail triggered.[/red]")
+
+    try:
+        if result is not None:
+            intent = result.get("intent", "unknown")
+            agent_used = result.get("agent_used", "unknown")
+            resolution_status = result.get("resolution_status", "unknown")
+            order_id = result.get("order_id")
+            last_ai_message = next(
+                (m.content for m in reversed(result.get("messages", [])) if hasattr(m, "type") and m.type == "ai"),
+                "",
+            )
+            summary = (
+                f"Session {session_id} ended. Intent: {intent}. Agent: {agent_used}. "
+                f"Resolution: {resolution_status}. Order: {order_id or 'N/A'}. "
+                f"Last response summary: {last_ai_message[:200]}"
+            )
+            _long_term_memory.save_interaction(
+                customer_id=customer_id,
+                session_id=session_id,
+                summary=summary,
+                metadata={"intent": intent, "resolution": resolution_status, "agent_used": agent_used},
+            )
+            console.print("[dim]Session summary saved to memory.[/dim]")
+
+            from memory.short_term import get_checkpointer
+            checkpointer = get_checkpointer()
+            if hasattr(checkpointer, "delete_thread"):
+                checkpointer.delete_thread(session_id)
+                console.print("[dim]SQLite checkpoint pruned.[/dim]")
+    except Exception as e:
+        logger.warning("Failed to save session summary to long-term memory: %s", e)
 
 
 # ── Demo mode ──────────────────────────────────────────────────────────────────
