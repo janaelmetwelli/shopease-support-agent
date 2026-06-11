@@ -56,8 +56,10 @@ RETRIEVED CONTEXT DOCUMENTS:
 AGENT RESPONSE:
 {response}
 
-Return ONLY this JSON (replace the zeros with your scores):
-{{"faithfulness": 0.0, "answer_relevancy": 0.0, "context_precision": 0.0}}\
+Now produce your scores. Return ONLY a JSON object with \
+exactly these three keys and your numeric scores as values.
+    Do not copy example values. Think carefully and score honestly.
+    Your JSON response:\
 """
 
 
@@ -118,10 +120,14 @@ def judge_node(state: dict) -> dict:
             "context":  context,
             "response": response[:600],
         }).content.strip()
+        logger.info("Judge raw LLM response: %s", raw)
 
         parsed = _extract_json(raw)
+        # Normalise keys to lowercase to handle LLM returning
+        # UPPERCASE or Mixed Case keys
+        parsed_lower = {k.lower(): v for k, v in parsed.items()}
         for key in scores:
-            val = parsed.get(key, 0.0)
+            val = parsed_lower.get(key, 0.0)
             scores[key] = round(max(0.0, min(1.0, float(val))), 4)
 
         logger.info(
@@ -131,12 +137,20 @@ def judge_node(state: dict) -> dict:
     except Exception as e:
         logger.warning("Judge node failed: %s", e)
 
-    log_llm_scores(
-        session_id=session_id,
-        customer_id=customer_id,
-        question=question,
-        response=response,
-        **scores,
-    )
+    try:
+        log_llm_scores(
+            session_id=session_id,
+            customer_id=customer_id,
+            question=question,
+            response=response,
+            **scores,
+        )
+    except Exception as e:
+        logger.warning("Judge node failed to log scores: %s", e)
 
-    return {"metadata": {**metadata, "judge_scores": scores}}
+    return {
+        "metadata": {**metadata, "judge_scores": scores},
+        "judge_faithfulness": scores["faithfulness"],
+        "judge_answer_relevancy": scores["answer_relevancy"],
+        "judge_context_precision": scores["context_precision"],
+    }
