@@ -349,11 +349,11 @@ _guardrail = InputGuardrail()
 
 
 def _build_llm():
-    from langchain_groq import ChatGroq
-    return ChatGroq(
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    return ChatGoogleGenerativeAI(
         model=settings.model_name,
         temperature=0.0,
-        api_key=settings.groq_api_key,
+        google_api_key=settings.gemini_api_key,
     )
 
 

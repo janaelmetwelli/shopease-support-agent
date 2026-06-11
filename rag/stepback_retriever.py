@@ -38,11 +38,11 @@ class StepBackRetriever:
 
     def _get_llm(self):
         if self._llm is None:
-            from langchain_groq import ChatGroq
-            self._llm = ChatGroq(
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            self._llm = ChatGoogleGenerativeAI(
                 model=settings.model_name,
                 temperature=0.0,
-                api_key=settings.groq_api_key,
+                google_api_key=settings.gemini_api_key,
             )
         return self._llm
 

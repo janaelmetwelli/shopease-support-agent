@@ -22,8 +22,11 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 from config.settings import settings
+from memory.long_term import LongTermMemory
 
 logger = logging.getLogger(__name__)
+
+_long_term_memory = LongTermMemory()
 
 SUPERVISOR_SYSTEM = """\
 You are the Supervisor of ShopEase's AI customer support system.
@@ -88,11 +91,11 @@ _llm_instance = None
 def _get_llm():
     global _llm_instance
     if _llm_instance is None:
-        from langchain_groq import ChatGroq
-        _llm_instance = ChatGroq(
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        _llm_instance = ChatGoogleGenerativeAI(
             model=settings.model_name,
             temperature=0.0,
-            api_key=settings.groq_api_key,
+            google_api_key=settings.gemini_api_key,
         )
     return _llm_instance
 
@@ -219,16 +222,14 @@ def supervisor_node(state: dict) -> dict:
     # ── Long-term memory recall ───────────────────────────────────────────────
     past_context = ""
     try:
-        from memory.long_term import LongTermMemory
-        ltm = LongTermMemory()
-        if ltm.get_customer_history_count(customer_id) > 0:
+        if _long_term_memory.get_customer_history_count(customer_id) > 0:
             last_human_text = next(
                 (m.content for m in reversed(messages) if getattr(m, "type", "") == "human"),
                 "",
             )
             recall_query = f"{intent} {order_id or ''} {last_human_text[:100]}".strip()
-            memories = ltm.recall(customer_id=customer_id, query=recall_query)
-            past_context = ltm.format_for_prompt(memories)
+            memories = _long_term_memory.recall(customer_id=customer_id, query=recall_query)
+            past_context = _long_term_memory.format_for_prompt(memories)
     except Exception as e:
         logger.debug("Long-term memory recall skipped: %s", e)
 

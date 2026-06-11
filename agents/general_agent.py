@@ -227,11 +227,11 @@ _llm_instance = None
 def _get_llm():
     global _llm_instance
     if _llm_instance is None:
-        from langchain_groq import ChatGroq
-        _llm_instance = ChatGroq(
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        _llm_instance = ChatGoogleGenerativeAI(
             model=settings.model_name,
             temperature=0.3,
-            api_key=settings.groq_api_key,
+            google_api_key=settings.gemini_api_key,
         )
     return _llm_instance
 
@@ -581,7 +581,7 @@ def general_agent_node(state: dict) -> dict:
     except Exception as e:
         err_str = str(e)
         if "429" in err_str or "rate_limit" in err_str.lower():
-            logger.warning("Layla: Groq rate limit hit | customer=%s", customer_id)
+            logger.warning("Layla: LLM rate limit hit | customer=%s", customer_id)
         else:
             logger.error("Layla generation failed: %s", e)
 

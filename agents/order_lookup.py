@@ -78,14 +78,14 @@ _llm_instance = None
 
 
 def _get_llm():
-    """Return shared ChatGroq instance — created once, reused every call."""
+    """Return shared ChatGoogleGenerativeAI instance — created once, reused every call."""
     global _llm_instance
     if _llm_instance is None:
-        from langchain_groq import ChatGroq
-        _llm_instance = ChatGroq(
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        _llm_instance = ChatGoogleGenerativeAI(
             model=settings.model_name,
             temperature=0.1,
-            api_key=settings.groq_api_key,
+            google_api_key=settings.gemini_api_key,
         )
     return _llm_instance
 
