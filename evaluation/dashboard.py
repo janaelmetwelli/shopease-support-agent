@@ -320,12 +320,15 @@ with tab1:
 
         # ── Latency percentiles ───────────────────────────────────────────────
         st.subheader("⚡ Latency Percentiles")
-        lat_cols = st.columns(3)
+        p95 = float(df['latency_ms'].quantile(0.95))
+        lat_cols = st.columns(4)
         with lat_cols[0]:
             st.metric("P50 (Median)", f"{kpis.get('p50_latency_ms', 0):.0f} ms")
         with lat_cols[1]:
             st.metric("P90", f"{kpis.get('p90_latency_ms', 0):.0f} ms")
         with lat_cols[2]:
+            st.metric("P95", f"{p95:.0f} ms")
+        with lat_cols[3]:
             st.metric("Max", f"{df['latency_ms'].max():.0f} ms")
 
         st.divider()
