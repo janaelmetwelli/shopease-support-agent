@@ -184,14 +184,16 @@ def run_scenario(label: str, customer_id: str, turns: list[str],
 
 # ── Run all scenarios ─────────────────────────────────────────────────────────
 
-MAX_SCENARIOS = 10
-scenarios_to_run = SCENARIOS[:MAX_SCENARIOS]
-
-print(f"\nRunning {len(scenarios_to_run)}/{len(SCENARIOS)} evaluation scenarios...\n")
+print(f"\nRunning {len(SCENARIOS)} evaluation scenarios...\n")
 print(f"{'#':<4} {'Label':<30} {'Agent':<14} {'Status':<16} {'Scores'}")
 print("-" * 90)
 
-for idx, (label, cust, turns) in enumerate(scenarios_to_run, 1):
+for idx, scenario in enumerate(SCENARIOS, 1):
+    label = scenario[0]
+    cust = scenario[1]
+    turns = scenario[2]
+    pre_verified = scenario[3] if len(scenario) > 3 else False
+
     t0 = time.time()
     result = run_scenario(label, cust, turns, pre_verified)
     elapsed = (time.time() - t0) * 1000
