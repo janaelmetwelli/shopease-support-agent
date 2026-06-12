@@ -18,6 +18,7 @@ from agents.judge_node import judge_node
 from agents.order_lookup import order_lookup_node
 from agents.policy_returns import policy_returns_node
 from agents.supervisor import supervisor_node
+from config.settings import settings
 from guardrails.input_guardrail import input_guardrail_node
 from guardrails.toxicity_guardrail import output_guardrail_node
 from memory.short_term import get_checkpointer

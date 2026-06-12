@@ -251,8 +251,11 @@ def supervisor_node(state: dict) -> dict:
     last_resolution = state.get("resolution_status", "pending")
     if (not state.get("pending_intents") and
         last_resolution in ("resolved", "escalated", "blocked", "pending")):
+        # This is a fresh query — clear any leftover
+        # decomposition state from previous turns
         partial_responses = []
         accumulated_docs = []
+        # Also reset is_decomposed
         is_decomposed_flag = False
     else:
         partial_responses = list(state.get("partial_responses", []))

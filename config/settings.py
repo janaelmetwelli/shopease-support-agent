@@ -38,6 +38,7 @@ class Settings(BaseSettings):
 
     # ── HuggingFace ───────────────────────────────────────────────────────────
     hf_token: str = Field(default="", alias="HF_TOKEN")
+    hf_home: str = Field(default="", alias="HF_HOME")
 
     # ── RAG ──────────────────────────────────────────────────────────────────
     embedding_model: str = Field(
@@ -55,6 +56,9 @@ class Settings(BaseSettings):
     max_refund_amount: float = Field(default=500.0, alias="MAX_REFUND_AMOUNT")
     return_window_days: int = Field(default=30, alias="RETURN_WINDOW_DAYS")
     toxicity_threshold: float = Field(default=0.6, alias="TOXICITY_THRESHOLD")
+
+    # ── Evaluation ───────────────────────────────────────────────────────────
+    judge_enabled: bool = Field(default=True, alias="JUDGE_ENABLED")
 
     # ── Memory / Eval paths ───────────────────────────────────────────────────
     memory_db_path: str = Field(default="./data/memory.db", alias="MEMORY_DB_PATH")
@@ -82,6 +86,8 @@ class Settings(BaseSettings):
         if self.hf_token:
             os.environ.setdefault("HF_TOKEN", self.hf_token)
             os.environ.setdefault("HUGGING_FACE_HUB_TOKEN", self.hf_token)
+        if self.hf_home:
+            os.environ.setdefault("HF_HOME", self.hf_home)
         for ssl_var in ("SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"):
             val = os.environ.get(ssl_var, "")
             if val and os.path.exists(val):
