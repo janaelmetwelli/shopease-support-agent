@@ -40,6 +40,9 @@ from tools.order_tools import (
     remove_item_tool,
     send_otp_email,
     _load_orders,
+    UpdateAddressArgs,
+    UpdateQuantityArgs,
+    RemoveItemArgs,
 )
 
 logger = logging.getLogger(__name__)
@@ -234,25 +237,27 @@ NORA_TOOL_CONTRACTS: Dict[str, Any] = {
         "args": {
             "order_id": "string",
             "customer_id": "string",
-            "product_id": "string",
+            "product_id": "string — use the product name from the customer message (e.g. 'FitTrack Smart Watch'); tool matches by name so no need to look up the exact PROD-XXX id",
             "new_qty": "integer",
             "order_status": "$T reference to check_order_status output"
         },
         "notes": (
             "Depends on check_order_status. "
-            "Only runs if status is processing."
+            "Only runs if status is processing. "
+            "Use the product name the customer mentioned for product_id."
         )
     },
     "remove_item": {
         "args": {
             "order_id": "string",
             "customer_id": "string",
-            "product_id": "string",
+            "product_id": "string — use the product name from the customer message (e.g. 'FitTrack Smart Watch'); tool matches by name so no need to look up the exact PROD-XXX id",
             "order_status": "$T reference to check_order_status output"
         },
         "notes": (
             "Depends on check_order_status. "
-            "Only runs if status is processing."
+            "Only runs if status is processing. "
+            "Use the product name the customer mentioned for product_id."
         )
     },
     "collect_return_context": {
@@ -547,9 +552,13 @@ def _extract_json(text: str) -> Any:
     return json.loads(clean)
 
 
-def _get_order_status(args: Dict[str, Any]) -> str:
-    """Extract order status string from the resolved order_status arg."""
-    data = args.get("order_status", {})
+def _get_order_status(args: Dict[str, Any]) -> Optional[str]:
+    """Extract order status string from the resolved order_status arg.
+    Returns None when order_status is absent from the plan (triggers replan).
+    """
+    if "order_status" not in args:
+        return None
+    data = args["order_status"]
     return data.get("order_status", "") if isinstance(data, dict) else str(data)
 
 
@@ -649,6 +658,8 @@ def _execute_tool(
 
     elif tool_name == "cancel_order":
         status = _get_order_status(args)
+        if status is None:
+            return {"status": "error", "message": "cancel_order requires check_order_status — replan: fetch_order → check_order_status → cancel_order"}
         if status != "processing":
             return {"status": "denied", "message": f"Cannot cancel — order is '{status}'"}
         return {"status": "ok", "result": cancel_order_tool.invoke(
@@ -656,34 +667,70 @@ def _execute_tool(
         )}
 
     elif tool_name == "update_address":
+        try:
+            validated = UpdateAddressArgs(
+                order_id=args.get("order_id", ""),
+                customer_id=customer_id,
+                new_address=args.get("new_address", ""),
+            )
+        except Exception as e:
+            return {"status": "error",
+                    "message": f"Invalid args for update_address: {e}"}
         status = _get_order_status(args)
+        if status is None:
+            return {"status": "error", "message": "update_address requires check_order_status — replan: fetch_order → check_order_status → update_address"}
         if status != "processing":
             return {"status": "denied", "message": f"Cannot update address — order is '{status}'"}
         return {"status": "ok", "result": update_address_tool.invoke({
-            "order_id": args.get("order_id", ""),
-            "customer_id": customer_id,
-            "new_address": args.get("new_address", ""),
+            "order_id": validated.order_id,
+            "customer_id": validated.customer_id,
+            "new_address": validated.new_address,
         })}
 
     elif tool_name == "update_quantity":
+        try:
+            validated = UpdateQuantityArgs(
+                order_id=args.get("order_id", ""),
+                customer_id=customer_id,
+                product_id=args.get("product_id", ""),
+                new_qty=int(args.get("new_qty", -1)),
+            )
+        except Exception as e:
+            return {"status": "error",
+                    "message": f"Missing required args for update_quantity: {e}. "
+                               f"product_id and new_qty must be provided."}
         status = _get_order_status(args)
+        if status is None:
+            return {"status": "error", "message": "update_quantity requires check_order_status — replan: fetch_order → check_order_status → update_quantity"}
         if status != "processing":
             return {"status": "denied", "message": f"Cannot update quantity — order is '{status}'"}
         return {"status": "ok", "result": update_quantity_tool.invoke({
-            "order_id": args.get("order_id", ""),
-            "customer_id": customer_id,
-            "product_id": args.get("product_id", ""),
-            "new_qty": int(args.get("new_qty", 1)),
+            "order_id": validated.order_id,
+            "customer_id": validated.customer_id,
+            "product_id": validated.product_id,
+            "new_qty": validated.new_qty,
         })}
 
     elif tool_name == "remove_item":
+        try:
+            validated = RemoveItemArgs(
+                order_id=args.get("order_id", ""),
+                customer_id=customer_id,
+                product_id=args.get("product_id", ""),
+            )
+        except Exception as e:
+            return {"status": "error",
+                    "message": f"Missing required args for remove_item: {e}. "
+                               f"product_id must be provided."}
         status = _get_order_status(args)
+        if status is None:
+            return {"status": "error", "message": "remove_item requires check_order_status — replan: fetch_order → check_order_status → remove_item"}
         if status != "processing":
             return {"status": "denied", "message": f"Cannot remove item — order is '{status}'"}
         return {"status": "ok", "result": remove_item_tool.invoke({
-            "order_id": args.get("order_id", ""),
-            "customer_id": customer_id,
-            "product_id": args.get("product_id", ""),
+            "order_id": validated.order_id,
+            "customer_id": validated.customer_id,
+            "product_id": validated.product_id,
         })}
 
     elif tool_name == "collect_return_context":
@@ -798,9 +845,24 @@ Every $T reference in args must point to the EXACT task ID
 that produces that data. Examples:
 
 CORRECT — cancel order:
-  T1: fetch_order → args: {{order_id: "ORD-XXX"}}
-  T2: check_order_status → args: {{order_data: "$T1"}} deps: ["T1"]
-  T3: cancel_order → args: {{order_id: "ORD-XXX", order_status: "$T2"}} deps: ["T2"]
+  T1: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []
+  T2: check_order_status → args: {{order_data: "$T1"}}  deps: ["T1"]
+  T3: cancel_order → args: {{order_id: "ORD-XXX", order_status: "$T2"}}  deps: ["T2"]
+
+CORRECT — update quantity (use product name from customer message):
+  T1: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []
+  T2: check_order_status → args: {{order_data: "$T1"}}  deps: ["T1"]
+  T3: update_quantity → args: {{order_id: "ORD-XXX", product_id: "FitTrack Smart Watch", new_qty: 2, order_status: "$T2"}}  deps: ["T2"]
+
+CORRECT — update address:
+  T1: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []
+  T2: check_order_status → args: {{order_data: "$T1"}}  deps: ["T1"]
+  T3: update_address → args: {{order_id: "ORD-XXX", new_address: "new address from customer message", order_status: "$T2"}}  deps: ["T2"]
+
+CORRECT — remove item (use product name from customer message):
+  T1: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []
+  T2: check_order_status → args: {{order_data: "$T1"}}  deps: ["T1"]
+  T3: remove_item → args: {{order_id: "ORD-XXX", product_id: "FitTrack Smart Watch", order_status: "$T2"}}  deps: ["T2"]
 
 CORRECT — fetch and check:
   T1: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []

@@ -22,6 +22,8 @@ from typing import Optional
 
 from langchain_core.tools import tool
 
+from pydantic import BaseModel, Field
+
 from config.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -129,6 +131,27 @@ def _format_order(order: dict) -> str:
         lines.append(f"Return reason: {order.get('return_reason', 'Not specified')}")
 
     return "\n".join(lines)
+
+
+# ── Pydantic validation schemas ──────────────────────────────────────────────
+
+class UpdateAddressArgs(BaseModel):
+    order_id: str = Field(..., description="Order ID e.g. ORD-10001")
+    customer_id: str = Field(..., description="Customer ID e.g. CUST-001")
+    new_address: str = Field(..., min_length=5, description="New shipping address")
+
+
+class UpdateQuantityArgs(BaseModel):
+    order_id: str = Field(..., description="Order ID e.g. ORD-10001")
+    customer_id: str = Field(..., description="Customer ID e.g. CUST-001")
+    product_id: str = Field(..., description="Product ID from order items e.g. PROD-005")
+    new_qty: int = Field(..., ge=0, description="New quantity — 0 removes the item")
+
+
+class RemoveItemArgs(BaseModel):
+    order_id: str = Field(..., description="Order ID e.g. ORD-10001")
+    customer_id: str = Field(..., description="Customer ID e.g. CUST-001")
+    product_id: str = Field(..., description="Product ID to remove")
 
 
 # ── Read tools (unchanged) ────────────────────────────────────────────────────
@@ -296,6 +319,13 @@ def update_quantity_tool(
     items = order["items"]
     item = next((i for i in items if i["product_id"] == product_id), None)
     if item is None:
+        item = next(
+            (i for i in items
+             if product_id.lower() in i["name"].lower()
+             or i["name"].lower() in product_id.lower()),
+            None,
+        )
+    if item is None:
         return f"Product '{product_id}' not found in order {oid}."
 
     if new_qty <= 0:
@@ -361,7 +391,13 @@ def _remove_item_from_order(orders: dict, oid: str, product_id: str) -> str:
     order = orders[oid]
     items = order["items"]
     item = next((i for i in items if i["product_id"] == product_id), None)
-
+    if item is None:
+        item = next(
+            (i for i in items
+             if product_id.lower() in i["name"].lower()
+             or i["name"].lower() in product_id.lower()),
+            None,
+        )
     if item is None:
         return f"Product '{product_id}' not found in order {oid}."
 
