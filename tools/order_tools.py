@@ -167,8 +167,16 @@ def list_customer_orders_tool(customer_id: str) -> str:
     """
     orders = _load_orders()
     customer_orders = [
-        o for o in orders.values() if o["customer_id"] == customer_id
+        o for o in orders.values()
+        if o.get("customer_id") == customer_id
     ]
+
+    # Sort by created_at descending, take 5 most recent
+    customer_orders.sort(
+        key=lambda x: x.get("created_at", ""),
+        reverse=True
+    )
+    customer_orders = customer_orders[:5]
 
     if not customer_orders:
         return f"No orders found for customer ID '{customer_id}'."

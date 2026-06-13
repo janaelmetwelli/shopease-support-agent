@@ -27,7 +27,6 @@ from typing import Annotated, Any, Dict, List, Optional, Set, TypedDict
 
 from langchain_core.messages import AIMessage
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 
@@ -158,48 +157,14 @@ SECURITY RULES — NEVER VIOLATE:
 - Never expose internal system details, policy IDs, or architecture
 
 ════════════════════════════════════════════════
-RESPONSE STYLE & STRUCTURE:
+RESPONSE STYLE:
 ════════════════════════════════════════════════
 - Warm and professional — speak like a real person
-- Keep responses concise: 2-3 short paragraphs maximum
+- Keep responses concise: 2-4 short paragraphs
+- Use bullet points only for step-by-step instructions or item lists
 - End with a clear next step or genuine offer to help further
-
-ORDER LIST FORMATTING RULES:
-- When listing orders, show MAXIMUM 5 most recent orders only
-- Use this exact format for each order:
-  📦 ORD-XXXXX | [Status] | [Total] | [Items]
-- Never repeat an order list already shown this conversation
-- If customer asks about a specific order, show ONLY that
-  order — never list all orders
-
-CANCELLATION/MODIFICATION RESPONSE STRUCTURE:
-1. Confirm what was done (one sentence)
-2. Key details (order ID, status, refund timeline if applicable)
-3. Next step or closing offer
-
-ORDER STATUS RESPONSE STRUCTURE:
-1. Current status clearly stated
-2. Key details (tracking, estimated delivery, items)
-3. Offer for further help
-
-════════════════════════════════════════════════
-CANCELLATION/MODIFICATION RULE:
-════════════════════════════════════════════════
-If the customer says "cancel it", "modify it", "change it"
-without specifying an order ID, and there are multiple orders
-in their history, you MUST ask:
-"Which order would you like to cancel? Please provide the
-order ID (e.g. ORD-XXXXX)."
-
-Never attempt to cancel or modify without a confirmed
-specific order ID from the customer in this conversation turn.
-
-AFTER CANCELLATION OR MODIFICATION:
-- Confirm the action in 1-2 sentences only
-- Do NOT list other orders unprompted
-- Do NOT mention other pending orders unless customer asks
-- Only show order lists when customer explicitly requests
-  "show my orders" or "what are my orders"
+- Highlight modification results clearly
+- Be warm when routing to the returns specialist
 
 CRITICAL OTP RULE:
 - NEVER include both send_otp and verify_otp in the same plan
@@ -226,42 +191,17 @@ If it says "New customer" or "No prior interactions":
 # ── Tool Contracts ─────────────────────────────────────────────────────────────
 
 NORA_TOOL_CONTRACTS: Dict[str, Any] = {
-    "send_otp": {
-        "args": {"customer_id": "string"},
-        "notes": (
-            "Always runs first when identity is not verified. "
-            "No dependencies. Sends OTP to customer email. "
-            "Also runs if customer requests a resend."
-        )
-    },
-    "verify_otp": {
-        "args": {
-            "customer_id": "string",
-            "entered_code": "6-digit code string from customer message"
-        },
-        "notes": (
-            "Depends on send_otp. "
-            "Must pass before any order tools run. "
-            "Hard security gate."
-        )
-    },
     "fetch_order": {
         "args": {"order_id": "string"},
-        "notes": "Depends on verify_otp. Fetches order from mock_orders.json."
+        "notes": "Identity is already verified. Fetches order from mock_orders.json. No OTP dependency needed."
     },
     "list_orders": {
         "args": {"customer_id": "string"},
-        "notes": (
-            "Depends on verify_otp. "
-            "Use when no specific order ID is mentioned."
-        )
+        "notes": "Identity is already verified. Use when no specific order ID is mentioned. No OTP dependency needed."
     },
     "retrieve_knowledge": {
         "args": {"query": "string — the customer question"},
-        "notes": (
-            "Depends on verify_otp. "
-            "Searches RAG knowledge base for relevant documents."
-        )
+        "notes": "Identity is already verified. Searches RAG knowledge base for relevant documents. No OTP dependency needed."
     },
     "check_order_status": {
         "args": {"order_data": "$T reference to fetch_order output"},
@@ -333,43 +273,33 @@ NORA_TOOL_CONTRACTS: Dict[str, Any] = {
     }
 }
 
-NORA_FALLBACK_PLAN: Dict[str, Any] = {
-    "tasks": [
-        {
-            "id": "T1",
-            "tool": "send_otp",
-            "args": {"customer_id": "PLACEHOLDER_CUSTOMER_ID"},
-            "deps": []
-        },
-        {
-            "id": "T2",
-            "tool": "verify_otp",
-            "args": {
-                "customer_id": "PLACEHOLDER_CUSTOMER_ID",
-                "entered_code": "PLACEHOLDER_CODE"
-            },
-            "deps": ["T1"]
-        },
-        {
-            "id": "T3",
-            "tool": "fetch_order",
-            "args": {"order_id": "PLACEHOLDER_ORDER_ID"},
-            "deps": ["T2"]
-        },
-        {
-            "id": "T4",
-            "tool": "retrieve_knowledge",
-            "args": {"query": "PLACEHOLDER_QUESTION"},
-            "deps": ["T2"]
-        },
-        {
-            "id": "T5",
-            "tool": "check_order_status",
-            "args": {"order_data": "$T3"},
-            "deps": ["T3"]
-        }
+def _build_fallback_plan(
+    customer_id: str,
+    order_id: Optional[str],
+    last_human: str,
+) -> List[Dict[str, Any]]:
+    """
+    Build a minimal safe fallback plan.
+    Identity is always verified when this runs — otp_gate
+    ensures that. Never includes OTP tools.
+    """
+    question = last_human[:100]
+
+    if order_id:
+        return [
+            {"id": "T1", "tool": "fetch_order",
+             "args": {"order_id": order_id}, "deps": []},
+            {"id": "T2", "tool": "retrieve_knowledge",
+             "args": {"query": question}, "deps": []},
+            {"id": "T3", "tool": "check_order_status",
+             "args": {"order_data": "$T1"}, "deps": ["T1"]},
+        ]
+    return [
+        {"id": "T1", "tool": "list_orders",
+         "args": {"customer_id": customer_id}, "deps": []},
+        {"id": "T2", "tool": "retrieve_knowledge",
+         "args": {"query": question}, "deps": []},
     ]
-}
 
 
 # ── DAG Utilities ──────────────────────────────────────────────────────────────
@@ -459,12 +389,113 @@ def _detect_cycles(tasks: List[Dict[str, Any]]) -> None:
         visit(tid)
 
 
+def _repair_bare_refs(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Fix bare $T references where the LLM omitted the task-number suffix.
+
+    For each task whose args contain "$T" (no following alphanumeric character),
+    replace "$T" with "$T<dep>" using the task's deps list.
+    Single dep: unambiguous substitution. Multiple deps: use the last dep
+    (heuristic — it is usually the data-producing task that feeds this one).
+    Called after normalize_nora_tasks and before validate_nora_tasks.
+    """
+    for task in tasks:
+        deps = task.get("deps", [])
+        args = task.get("args", {})
+
+        if not re.search(r"\$T(?![A-Za-z0-9_])", json.dumps(args)):
+            continue
+        if not deps:
+            continue
+
+        replacement = deps[0] if len(deps) == 1 else deps[-1]
+
+        def _fix(obj: Any, rep: str = replacement) -> Any:
+            if isinstance(obj, str):
+                return re.sub(r"\$T(?![A-Za-z0-9_])", f"${rep}", obj)
+            if isinstance(obj, dict):
+                return {k: _fix(v, rep) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [_fix(v, rep) for v in obj]
+            return obj
+
+        task["args"] = _fix(args)
+        logger.info(
+            "Repaired bare $T → $%s in task %s (%s)",
+            replacement, task["id"], task["tool"],
+        )
+
+    return tasks
+
+
+def _renumber_tasks(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Re-number tasks in topological execution order so T1 always
+    runs before T2, T2 before T3, etc.
+    This fixes LLM plans where task IDs don't match execution order.
+    """
+    # Build dependency graph
+    id_to_task = {t["id"]: t for t in tasks}
+
+    # Topological sort
+    visited = set()
+    ordered = []
+
+    def visit(task_id: str):
+        if task_id in visited:
+            return
+        visited.add(task_id)
+        for dep in id_to_task[task_id].get("deps", []):
+            visit(dep)
+        ordered.append(task_id)
+
+    for task_id in id_to_task:
+        visit(task_id)
+
+    # Build old→new ID mapping
+    id_map = {old_id: f"T{i+1}" for i, old_id in enumerate(ordered)}
+
+    # Rebuild tasks with new IDs
+    renumbered = []
+    for old_id in ordered:
+        task = dict(id_to_task[old_id])
+        task["id"] = id_map[old_id]
+        task["deps"] = [id_map[d] for d in task.get("deps", [])]
+        # Fix $T references in args
+        args_str = json.dumps(task.get("args", {}))
+        for old, new in id_map.items():
+            args_str = args_str.replace(f"${old}", f"${new}")
+        task["args"] = json.loads(args_str)
+        renumbered.append(task)
+
+    return renumbered
+
+
+def _deps_all_succeeded(deps: List[str], results: Dict[str, Any]) -> bool:
+    """Return False if any dep completed with a blocking failure status."""
+    for dep_id in deps:
+        r = results.get(dep_id, {})
+        if isinstance(r, dict) and r.get("status") == "failed":
+            return False
+    return True
+
+
 def validate_nora_tasks(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     Validate the Nora DAG is executable.
     Checks: valid IDs, valid tool names, $T refs in deps,
     all deps exist, no cycles, verify_otp transitive dependency on order tools.
     """
+    otp_tools_in_plan = [
+        t["tool"] for t in tasks
+        if t["tool"] in ("send_otp", "verify_otp")
+    ]
+    if otp_tools_in_plan:
+        raise ValueError(
+            f"Plan contains OTP tools {otp_tools_in_plan} — "
+            "OTP is handled by otp_gate, not the planner."
+        )
+
     tasks = normalize_nora_tasks(tasks)
     task_ids = [t["id"] for t in tasks]
 
@@ -502,14 +533,6 @@ def validate_nora_tasks(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             if ref not in deps:
                 raise ValueError(
                     f"{task_id}: reference '${ref}' used in args but missing from deps."
-                )
-
-        if tool in order_tools and verify_task_ids:
-            all_deps = _get_all_deps(task_id, id_to_task)
-            if not any(v in all_deps for v in verify_task_ids):
-                raise ValueError(
-                    f"{task_id}: order tool '{tool}' must depend on "
-                    f"verify_otp (directly or transitively)."
                 )
 
     _detect_cycles(tasks)
@@ -729,81 +752,6 @@ def planner_node(state: AgentState) -> dict:
 
     contracts_text = json.dumps(NORA_TOOL_CONTRACTS, indent=2, ensure_ascii=False)
 
-    # ── OTP verification fast path ────────────────────────────────────────────
-    # When an OTP is already pending and the customer's message contains a
-    # 6-digit code, skip the LLM entirely and build the plan deterministically.
-    # This prevents the LLM from generating a new send_otp task, which would
-    # overwrite the pending code and loop the customer back to "enter your code".
-    pending_otp = metadata.get("pending_otp")
-    logger.info(
-        "Nora planner debug: pending_otp=%s identity_verified=%s last_human=%s",
-        metadata.get("pending_otp"),
-        metadata.get("identity_verified"),
-        last_human[:20],
-    )
-    if pending_otp and not identity_verified and re.search(r"\d{6}", last_human):
-        pending_intent = metadata.get("pending_intent", {})
-        original_order_id = pending_intent.get("order_id") or order_id
-        original_question = pending_intent.get("question") or last_human
-
-        fast_tasks: List[Dict[str, Any]] = [
-            {
-                "id": "T1",
-                "tool": "verify_otp",
-                "args": {"customer_id": customer_id, "entered_code": last_human},
-                "deps": [],
-            }
-        ]
-        if original_order_id:
-            fast_tasks += [
-                {
-                    "id": "T2",
-                    "tool": "fetch_order",
-                    "args": {"order_id": original_order_id},
-                    "deps": ["T1"],
-                },
-                {
-                    "id": "T3",
-                    "tool": "retrieve_knowledge",
-                    "args": {"query": original_question},
-                    "deps": ["T1"],
-                },
-                {
-                    "id": "T4",
-                    "tool": "check_order_status",
-                    "args": {"order_data": "$T2"},
-                    "deps": ["T2"],
-                },
-            ]
-        else:
-            fast_tasks.append(
-                {
-                    "id": "T2",
-                    "tool": "list_orders",
-                    "args": {"customer_id": customer_id},
-                    "deps": ["T1"],
-                }
-            )
-
-        try:
-            fast_tasks = validate_nora_tasks(fast_tasks)
-            logger.info(
-                "Nora planner: OTP fast-path — %d tasks for customer %s",
-                len(fast_tasks), customer_id,
-            )
-            compiler_state = metadata.get("compiler_state", {})
-            compiler_state["plan"] = fast_tasks
-            compiler_state["replan_count"] = replan_count
-            compiler_state["completed_tasks"] = {}   # reset — never inherit from previous turn
-            compiler_state["trace"] = []
-            metadata["compiler_state"] = compiler_state
-            return {"metadata": metadata, "agent_used": "order_lookup"}
-        except Exception as e:
-            logger.warning(
-                "Nora planner: OTP fast-path failed (%s) — falling through to LLM", e
-            )
-            # Fall through to the LLM planner below
-
     # Build context notes to guide the planner
     context_notes: List[str] = []
     if identity_verified:
@@ -844,6 +792,28 @@ Tool contracts:
 
 Critical rules:
 - Use only tool names from the contracts above
+
+REFERENCE RULES — CRITICAL:
+Every $T reference in args must point to the EXACT task ID
+that produces that data. Examples:
+
+CORRECT — cancel order:
+  T1: fetch_order → args: {{order_id: "ORD-XXX"}}
+  T2: check_order_status → args: {{order_data: "$T1"}} deps: ["T1"]
+  T3: cancel_order → args: {{order_id: "ORD-XXX", order_status: "$T2"}} deps: ["T2"]
+
+CORRECT — fetch and check:
+  T1: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []
+  T2: check_order_status → args: {{order_data: "$T1"}}  deps: ["T1"]
+
+WRONG — never do this:
+  T1: check_order_status → args: {{order_data: "$T2"}}  deps: ["T2"]
+  T2: fetch_order → args: {{order_id: "ORD-XXX"}}  deps: []
+  (T1 cannot reference T2 which runs after it)
+
+RULE: Task IDs must be assigned in execution order.
+T1 always runs first, T2 runs second, etc.
+A task can only reference tasks with LOWER numbers in its args.
 - Task IDs must be T1, T2, T3 etc.
 - Every $T reference in args must appear in deps
 - The graph must be acyclic
@@ -869,30 +839,17 @@ Create the minimal DAG needed to answer this message."""
         response = llm.invoke(prompt).content
         raw_plan = _extract_json(response)
         tasks = normalize_nora_tasks(raw_plan)
+        tasks = _repair_bare_refs(tasks)
+        tasks = _renumber_tasks(tasks)
         tasks = validate_nora_tasks(tasks)
         logger.info(
             "Nora planner: %d tasks planned for customer %s", len(tasks), customer_id
         )
     except Exception as e:
         logger.warning("Nora planner failed validation, using fallback: %s", e)
-        # Fill placeholders in the fallback plan
-        fallback = json.loads(
-            json.dumps(NORA_FALLBACK_PLAN)
-            .replace("PLACEHOLDER_CUSTOMER_ID", customer_id)
-            .replace("PLACEHOLDER_CODE", last_human[:10])
-            .replace("PLACEHOLDER_ORDER_ID", order_id or "UNKNOWN")
-            .replace("PLACEHOLDER_QUESTION", last_human[:100])
+        tasks = validate_nora_tasks(
+            _renumber_tasks(_build_fallback_plan(customer_id, order_id, last_human))
         )
-        # If identity already verified remove send_otp and verify_otp from fallback
-        if identity_verified:
-            fallback["tasks"] = [
-                t for t in fallback["tasks"]
-                if t["tool"] not in ("send_otp", "verify_otp")
-            ]
-            # Remove deps on T1/T2 since they're gone
-            for t in fallback["tasks"]:
-                t["deps"] = [d for d in t["deps"] if d not in ("T1", "T2")]
-        tasks = validate_nora_tasks(fallback["tasks"])
 
     compiler_state = metadata.get("compiler_state", {})
     compiler_state["plan"] = tasks
@@ -934,10 +891,11 @@ def scheduler_node(state: AgentState) -> dict:
     while remaining:
         wave += 1
 
-        # Tasks whose dependencies are all satisfied
+        # Tasks whose dependencies are all satisfied and none have failed
         ready = [
             t for t in remaining.values()
             if set(t.get("deps", [])).issubset(results.keys())
+            and _deps_all_succeeded(t.get("deps", []), results)
         ]
 
         if not ready:
@@ -981,14 +939,12 @@ def scheduler_node(state: AgentState) -> dict:
                     "error": error,
                 })
                 del remaining[task_id]
-
-        # Merge metadata side-effects from this wave into metadata (main thread, no race).
-        for task_result in results.values():
-            if not isinstance(task_result, dict):
-                continue
-            for key in _METADATA_SIDE_EFFECT_KEYS:
-                if key in task_result:
-                    metadata[key] = task_result[key]
+                # Merge side-effects from this task only (not all results).
+                # Done here so the next wave sees updated metadata immediately.
+                if isinstance(result, dict):
+                    for key in _METADATA_SIDE_EFFECT_KEYS:
+                        if key in result:
+                            metadata[key] = result[key]
 
     compiler_state["completed_tasks"] = results
     compiler_state["trace"] = trace
@@ -1385,7 +1341,7 @@ def _route_after_joiner(state: AgentState) -> str:
     metadata = state.get("metadata", {})
     replan_count = metadata.get("compiler_state", {}).get("replan_count", 0)
 
-    if resolution == "replanning" and replan_count <= MAX_REPLANS:
+    if resolution == "replanning" and replan_count < MAX_REPLANS:
         return "planner"
     return END
 
@@ -1427,22 +1383,138 @@ def _get_subgraph():
     return _subgraph
 
 
+def otp_gate(state: dict) -> dict | None:
+    """
+    Pre-check before planner runs. All OTP state stored in
+    metadata so it persists across turns via LangGraph checkpointer.
+
+    Returns None if planner should proceed.
+    Returns a state dict if OTP handling is needed — caller
+    returns this immediately without running the planner.
+    """
+    messages = state.get("messages", [])
+    metadata = dict(state.get("metadata", {}))
+    customer_id = state.get("customer_id", "unknown")
+
+    last_human = next(
+        (m.content for m in reversed(messages)
+         if getattr(m, "type", "") == "human"), ""
+    )
+
+    identity_verified = bool(metadata.get("identity_verified", False))
+    pending_otp = metadata.get("pending_otp")
+
+    # ── Already verified — planner proceeds normally ──────────────
+    if identity_verified:
+        return None
+
+    # ── OTP pending + customer entered digits — verify ────────────
+    if pending_otp:
+        otp_match = re.search(r"\d{5,6}", last_human)
+        if otp_match:
+            entered = otp_match.group()
+            if entered == str(pending_otp):
+                # Correct — store verified in metadata, proceed to planner
+                metadata["identity_verified"] = True
+                metadata["pending_otp"] = None
+                logger.info("Identity verified for customer %s", customer_id)
+                # Update state in-place so planner sees verified=True
+                state["metadata"] = metadata
+                return None  # proceed to planner
+            else:
+                # Wrong code
+                logger.warning("OTP mismatch for customer %s", customer_id)
+                return {
+                    "messages": [AIMessage(content=(
+                        "That code doesn't match what I have on file. "
+                        "Please double-check and try again, or let me "
+                        "know if you'd like me to resend a new code."
+                    ))],
+                    "agent_used": "order_lookup",
+                    "resolution_status": "pending_verification",
+                    "requires_escalation": False,
+                    "metadata": metadata,
+                    "retrieved_docs": [],
+                    "retrieval_scores": [],
+                }
+        else:
+            # OTP pending but no digits entered — remind customer
+            return {
+                "messages": [AIMessage(content=(
+                    "Please enter the 6-digit verification code "
+                    "sent to your registered email to continue."
+                ))],
+                "agent_used": "order_lookup",
+                "resolution_status": "pending_verification",
+                "requires_escalation": False,
+                "metadata": metadata,
+                "retrieved_docs": [],
+                "retrieval_scores": [],
+            }
+
+    # ── No OTP pending — send one and stop ────────────────────────
+    from tools.order_tools import send_otp_email
+    try:
+        otp, _ = send_otp_email(customer_id)
+    except ValueError as e:
+        logger.warning("OTP gate: %s", e)
+        return {
+            "messages": [AIMessage(content=(
+                "I wasn't able to find an account associated with "
+                "your customer ID. Please contact us at "
+                "support@shopease.com or call 19123 for assistance."
+            ))],
+            "agent_used": "order_lookup",
+            "resolution_status": "escalated",
+            "requires_escalation": False,
+            "metadata": state.get("metadata", {}),
+            "retrieved_docs": [],
+            "retrieval_scores": [],
+        }
+
+    # Store everything in metadata so it persists across turns
+    metadata["pending_otp"] = otp
+    metadata["identity_verified"] = False
+    metadata["pending_intent"] = {
+        "order_id": state.get("order_id"),
+        "question": last_human,
+    }
+    logger.info("OTP dispatched for customer %s", customer_id)
+
+    return {
+        "messages": [AIMessage(content=(
+            "For your security, I've sent a 6-digit verification "
+            "code to your registered email address. "
+            "Please enter it here to continue."
+        ))],
+        "agent_used": "order_lookup",
+        "resolution_status": "pending_verification",
+        "requires_escalation": False,
+        "metadata": metadata,
+        "retrieved_docs": [],
+        "retrieval_scores": [],
+    }
+
+
 def order_lookup_node(state: AgentState) -> dict:
     """
     Public entry point called by the main LangGraph graph.
-    Runs planner → scheduler → joiner in a loop, replanning up to MAX_REPLANS times.
-
-    Uses a manual loop rather than subgraph.invoke() to avoid double-accumulation
-    of messages: subgraph.invoke() with AgentState would apply the add_messages
-    reducer inside the subgraph AND again in the main graph, duplicating every
-    AIMessage. The manual loop returns only joiner_out["messages"] (the new
-    AIMessage alone), which the main graph's add_messages reducer appends once.
-
-    Signature is unchanged from the previous sequential agent.
+    Runs otp_gate then planner → scheduler → joiner in a loop,
+    replanning up to MAX_REPLANS times.
     """
     current = dict(state)   # local copy — nodes mutate metadata in-place via state ref
     joiner_out: dict = {}
 
+    # OTP pre-check — runs before planner every time
+    # Returns None if identity verified (proceed to planner)
+    # Returns a result dict if OTP needs handling (return immediately)
+    otp_result = otp_gate(current)
+    if otp_result is not None:
+        return otp_result
+
+    # Identity is verified (either was already verified, or just
+    # verified by otp_gate which updated current["metadata"])
+    # Run the planner → scheduler → joiner loop normally
     for _ in range(MAX_REPLANS + 2):
         current.update(planner_node(current))
         current.update(scheduler_node(current))
@@ -1450,6 +1522,7 @@ def order_lookup_node(state: AgentState) -> dict:
         current.update(joiner_out)
         if current.get("resolution_status") != "replanning":
             break
+
     resolution = current.get("resolution_status", "resolved")
     if resolution == "resolved":
         try:

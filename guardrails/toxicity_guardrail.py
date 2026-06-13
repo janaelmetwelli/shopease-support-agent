@@ -89,6 +89,12 @@ class ToxicityGuardrail:
             try:
                 from better_profanity import profanity
                 profanity.load_censor_words()
+                # Remove cooking/product terms that cause false positives
+                false_positives = {"pot", "pots"}
+                profanity.CENSOR_WORDSET = [
+                    w for w in profanity.CENSOR_WORDSET
+                    if str(w).lower() not in false_positives
+                ]
                 self._profanity = profanity
             except ImportError:
                 logger.warning("better-profanity not installed; skipping profanity check.")
