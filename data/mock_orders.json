@@ -62,13 +62,13 @@
       {
         "product_id": "PROD-005",
         "name": "FitTrack Smart Watch",
-        "qty": 1,
-        "price": 249.99
+        "qty": 2,
+        "price": 499.98
       }
     ],
-    "subtotal": 249.99,
+    "subtotal": 499.98,
     "shipping_cost": 12.99,
-    "total": 262.98,
+    "total": 512.97,
     "payment_method": "Mastercard ending in 5555",
     "shipping_address": "47 El-Thawra Street, Heliopolis, Cairo",
     "created_at": "2025-05-23",
@@ -3522,7 +3522,7 @@
   "ORD-10128": {
     "order_id": "ORD-10128",
     "customer_id": "CUST-003",
-    "status": "processing",
+    "status": "cancelled",
     "items": [
       {
         "product_id": "PROD-003",
@@ -3542,7 +3542,9 @@
     "estimated_delivery": "2024-06-26",
     "tracking_number": null,
     "carrier": "Aramex",
-    "notes": "Order is being prepared for shipment."
+    "notes": "Order is being prepared for shipment.",
+    "cancelled_at": "2026-06-12",
+    "cancellation_reason": "Customer request"
   },
   "ORD-10129": {
     "order_id": "ORD-10129",
@@ -3658,7 +3660,7 @@
   "ORD-10133": {
     "order_id": "ORD-10133",
     "customer_id": "CUST-010",
-    "status": "delivered",
+    "status": "processing",
     "items": [
       {
         "product_id": "PROD-005",

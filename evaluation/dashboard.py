@@ -2,8 +2,8 @@
 Streamlit Evaluation Dashboard
 Run with:  streamlit run evaluation/dashboard.py
 
-Tab 1 â€” Live Metrics: latency, resolution rate, guardrail events, retrieval scores.
-Tab 2 â€” RAG Evaluation: context precision & recall, naive vs hybrid comparison.
+Tab 1 - Live Metrics: latency, resolution rate, guardrail events, retrieval scores.
+Tab 2 - RAG Evaluation: context precision & recall, naive vs hybrid comparison.
 """
 
 import sys
@@ -18,21 +18,21 @@ import streamlit as st
 from evaluation.metrics import get_metrics_df, compute_summary, get_llm_scores_df
 
 
-# â”€â”€ RAG Evaluation tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- RAG Evaluation tab --------------------------------------------------------
 
 def _render_rag_tab():
     """Render the RAG Evaluation tab: IR metrics, RAGAS scores, and key findings."""
     import json
     from pathlib import Path
 
-    st.header("ðŸ” RAG Pipeline Evaluation")
+    st.header("RAG Pipeline Evaluation")
     st.caption(
         "Comparison of retrieval pipelines across "
         "P@k, R@k, MRR, Latency, and RAGAS metrics."
     )
 
-    # â”€â”€ Section 1: IR Metrics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.subheader("ðŸ“Š Information Retrieval Metrics (top_k=5)")
+    # -- Section 1: IR Metrics -------------------------------------------------
+    st.subheader("Information Retrieval Metrics (top_k=5)")
 
     ir_data = {
         "Retriever":        ["Naive", "BM25+RRF", "Step-Back", "Hybrid", "Agentic"],
@@ -87,8 +87,8 @@ def _render_rag_tab():
 
     st.divider()
 
-    # â”€â”€ Section 2: RAGAS Scores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.subheader("ðŸ§ª RAGAS Evaluation Scores")
+    # -- Section 2: RAGAS Scores -----------------------------------------------
+    st.subheader("RAGAS Evaluation Scores")
 
     ragas_results = {}
     for name in ["naive", "hybrid", "agentic"]:
@@ -121,12 +121,11 @@ def _render_rag_tab():
         st.caption(f"Best overall: **{best['Retriever']}** (avg: {best['Average']:.3f})")
 
         kpi_cols = st.columns(4)
-        icons = ["ðŸŽ¯", "ðŸ“š", "âœ…", "ðŸ’¬"]
-        for col, metric, icon in zip(kpi_cols, RAGAS_METRICS, icons):
+        for col, metric in zip(kpi_cols, RAGAS_METRICS):
             with col:
                 best_val = ragas_df[metric].max()
                 best_ret = ragas_df.loc[ragas_df[metric].idxmax(), "Retriever"]
-                st.metric(f"{icon} {metric}", f"{best_val:.3f}", help=f"Best: {best_ret}")
+                st.metric(metric, f"{best_val:.3f}", help=f"Best: {best_ret}")
 
         st.dataframe(
             ragas_df.set_index("Retriever").style.format("{:.3f}"),
@@ -145,33 +144,33 @@ def _render_rag_tab():
 
     st.divider()
 
-    # â”€â”€ Section 3: Key Findings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.subheader("ðŸ’¡ Key Findings")
+    # -- Section 3: Key Findings -----------------------------------------------
+    st.subheader("Key Findings")
     st.markdown("""
 | Finding | Detail |
 |---------|--------|
-| **Best Precision** | Agentic (P@1=0.883) â€” query rewriting makes every doc count |
-| **Best Recall** | Hybrid (R@5=0.878) â€” widest coverage |
-| **Best MRR** | Agentic (0.904) â€” relevant docs appear highest |
-| **Fastest** | Naive / BM25+RRF (~13â€“15 ms P50) |
+| **Best Precision** | Agentic (P@1=0.883) - query rewriting makes every doc count |
+| **Best Recall** | Hybrid (R@5=0.878) - widest coverage |
+| **Best MRR** | Agentic (0.904) - relevant docs appear highest |
+| **Fastest** | Naive / BM25+RRF (~13-15 ms P50) |
 | **Production** | Hybrid (345 ms) for speed; Agentic (1065 ms) for hard queries |
-| **Step-back** | Not adopted â€” worse than naive on most queries |
+| **Step-back** | Not adopted - worse than naive on most queries |
 """)
 
 
-# â”€â”€ Page config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Page config ---------------------------------------------------------------
 st.set_page_config(
     page_title="ShopEase Support Dashboard",
-    page_icon="ðŸ›ï¸",
+    page_icon="S",
     layout="wide",
 )
 
-# â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Sidebar -------------------------------------------------------------------
 with st.sidebar:
-    st.title("âš™ï¸ Filters")
+    st.title("Filters")
     hours = st.slider("Time window (hours)", min_value=1, max_value=168, value=24, step=1)
     auto_refresh = st.checkbox("Auto-refresh (30s)", value=False)
-    if st.button("ðŸ”„ Refresh Now"):
+    if st.button("Refresh Now"):
         st.rerun()
 
 if auto_refresh:
@@ -179,15 +178,15 @@ if auto_refresh:
     time.sleep(30)
     st.rerun()
 
-st.title("ðŸ›ï¸ ShopEase Customer Support â€” Evaluation Dashboard")
+st.title("ShopEase Customer Support - Evaluation Dashboard")
 
-# â”€â”€ Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-tab1, tab2 = st.tabs(["ðŸ“Š Live Metrics", "ðŸ” RAG Evaluation"])
+# -- Tabs ----------------------------------------------------------------------
+tab1, tab2 = st.tabs(["Live Metrics", "RAG Evaluation"])
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# TAB 1 â€” Live Metrics
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ==============================================================================
+# TAB 1 - Live Metrics
+# ==============================================================================
 with tab1:
 
     df = get_metrics_df(hours=hours)
@@ -195,31 +194,31 @@ with tab1:
 
     if df.empty:
         st.warning(
-            "ðŸ“­ No interaction data yet. Run `python main.py` to start the agent "
+            "No interaction data yet. Run `python main.py` to start the agent "
             "and generate some conversations."
         )
     else:
-        # â”€â”€ KPI cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # -- KPI cards ---------------------------------------------------------
         col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
-            st.metric("ðŸ’¬ Total Interactions", kpis.get("total_interactions", 0))
+            st.metric("Total Interactions", kpis.get("total_interactions", 0))
         with col2:
             rate = kpis.get("resolution_rate", 0)
-            st.metric("âœ… Resolution Rate", f"{rate:.1%}", delta=f"{rate - 0.75:.1%} vs target")
+            st.metric("Resolution Rate", f"{rate:.1%}", delta=f"{rate - 0.75:.1%} vs target")
         with col3:
             lat = kpis.get("avg_latency_ms", 0)
-            st.metric("âš¡ Avg Latency", f"{lat:.0f} ms")
+            st.metric("Avg Latency", f"{lat:.0f} ms")
         with col4:
             compliance = kpis.get("policy_compliance_rate", 1)
-            st.metric("ðŸ“‹ Policy Compliance", f"{compliance:.1%}")
+            st.metric("Policy Compliance", f"{compliance:.1%}")
         with col5:
             retrieval = kpis.get("avg_retrieval_score", 0)
-            st.metric("ðŸ” Avg Retrieval Score", f"{retrieval:.3f}")
+            st.metric("Avg Retrieval Score", f"{retrieval:.3f}")
 
         st.divider()
 
-        # â”€â”€ Row 1: Distribution charts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # -- Row 1: Distribution charts ----------------------------------------
         col_l, col_r = st.columns(2)
 
         with col_l:
@@ -227,7 +226,7 @@ with tab1:
             intent_counts.columns = ["Intent", "Count"]
             fig = px.pie(
                 intent_counts, names="Intent", values="Count",
-                title="ðŸŽ¯ Intent Distribution",
+                title="Intent Distribution",
                 color_discrete_sequence=px.colors.qualitative.Set3,
             )
             fig.update_traces(textposition="inside", textinfo="percent+label")
@@ -238,13 +237,13 @@ with tab1:
             agent_counts.columns = ["Agent", "Count"]
             fig = px.bar(
                 agent_counts, x="Agent", y="Count",
-                title="ðŸ¤– Agent Utilisation",
+                title="Agent Utilisation",
                 color="Agent",
                 color_discrete_sequence=px.colors.qualitative.Pastel,
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        # â”€â”€ Row 2: Latency + Resolution â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # -- Row 2: Latency + Resolution ---------------------------------------
         col_l, col_r = st.columns(2)
 
         with col_l:
@@ -253,7 +252,7 @@ with tab1:
                 df_sorted,
                 x="timestamp",
                 y="latency_ms",
-                title="âš¡ Response Latency Over Time",
+                title="Response Latency Over Time",
                 labels={"latency_ms": "Latency (ms)", "timestamp": "Time"},
                 markers=True,
             )
@@ -276,13 +275,13 @@ with tab1:
             }
             fig = px.bar(
                 res_counts, x="Status", y="Count",
-                title="ðŸ“Š Resolution Status Distribution",
+                title="Resolution Status Distribution",
                 color="Status",
                 color_discrete_map=color_map,
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        # â”€â”€ Row 3: Retrieval Quality + Guardrail Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # -- Row 3: Retrieval Quality + Guardrail Events -----------------------
         col_l, col_r = st.columns(2)
 
         with col_l:
@@ -290,7 +289,7 @@ with tab1:
                 df,
                 x="avg_retrieval_score",
                 nbins=20,
-                title="ðŸ” Retrieval Score Distribution",
+                title="Retrieval Score Distribution",
                 labels={"avg_retrieval_score": "Avg Reranker Score"},
                 color_discrete_sequence=["#3498db"],
             )
@@ -312,14 +311,14 @@ with tab1:
             })
             fig = px.bar(
                 guard_df, x="Event", y="Count",
-                title="ðŸ›¡ï¸ Guardrail Events",
+                title="Guardrail Events",
                 color="Event",
                 color_discrete_sequence=["#2ecc71", "#e74c3c", "#f39c12"],
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        # â”€â”€ Latency percentiles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        st.subheader("âš¡ Latency Percentiles")
+        # -- Latency percentiles -----------------------------------------------
+        st.subheader("Latency Percentiles")
         p95 = float(df['latency_ms'].quantile(0.95))
         lat_cols = st.columns(4)
         with lat_cols[0]:
@@ -333,8 +332,8 @@ with tab1:
 
         st.divider()
 
-        # â”€â”€ Raw interaction table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        st.subheader("ðŸ“‹ Recent Interactions")
+        # -- Raw interaction table ---------------------------------------------
+        st.subheader("Recent Interactions")
         display_cols = [
             "timestamp", "customer_id", "intent", "agent_used",
             "resolution_status", "latency_ms", "guardrail_passed",
@@ -344,7 +343,7 @@ with tab1:
         st.dataframe(df[available].head(50), use_container_width=True, hide_index=True)
 
         st.download_button(
-            label="ðŸ“¥ Download CSV",
+            label="Download CSV",
             data=df.to_csv(index=False).encode("utf-8"),
             file_name="shopease_eval_metrics.csv",
             mime="text/csv",
@@ -352,17 +351,17 @@ with tab1:
 
         st.divider()
 
-        # â”€â”€ LLM Judge Scores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        st.subheader("ðŸ§‘â€âš–ï¸ LLM Judge Scores")
+        # -- LLM Judge Scores --------------------------------------------------
+        st.subheader("LLM Judge Scores")
         st.caption(
             "Per-turn RAG quality scores produced by the judge node: "
-            "faithfulness, answer relevancy, and context precision (each 0â€“1)."
+            "faithfulness, answer relevancy, and context precision (each 0-1)."
         )
 
         scores_df = get_llm_scores_df(hours=hours)
 
         if scores_df.empty:
-            st.info("No judge scores yet â€” run the agent to generate conversations.")
+            st.info("No judge scores yet - run the agent to generate conversations.")
         else:
             avg_faith = scores_df["faithfulness"].mean()
             avg_relev = scores_df["answer_relevancy"].mean()
@@ -371,16 +370,16 @@ with tab1:
 
             jcol1, jcol2, jcol3, jcol4 = st.columns(4)
             with jcol1:
-                st.metric("âœ… Faithfulness", f"{avg_faith:.3f}",
+                st.metric("Faithfulness", f"{avg_faith:.3f}",
                           help="Response grounded in retrieved docs (1 = no hallucination)")
             with jcol2:
-                st.metric("ðŸ’¬ Answer Relevancy", f"{avg_relev:.3f}",
+                st.metric("Answer Relevancy", f"{avg_relev:.3f}",
                           help="Response directly answers the question (1 = perfect)")
             with jcol3:
-                st.metric("ðŸŽ¯ Context Precision", f"{avg_prec:.3f}",
+                st.metric("Context Precision", f"{avg_prec:.3f}",
                           help="Retrieved docs are relevant to the question (1 = all relevant)")
             with jcol4:
-                st.metric("â­ Overall Average", f"{avg_all:.3f}")
+                st.metric("Overall Average", f"{avg_all:.3f}")
 
             # Time-series of all three scores
             scores_sorted = scores_df.sort_values("timestamp")
@@ -388,8 +387,8 @@ with tab1:
                 scores_sorted,
                 x="timestamp",
                 y=["faithfulness", "answer_relevancy", "context_precision"],
-                title="ðŸ§‘â€âš–ï¸ LLM Judge Scores Over Time",
-                labels={"value": "Score (0â€“1)", "timestamp": "Time", "variable": "Metric"},
+                title="LLM Judge Scores Over Time",
+                labels={"value": "Score (0-1)", "timestamp": "Time", "variable": "Metric"},
                 markers=True,
                 color_discrete_map={
                     "faithfulness":      "#2ecc71",
@@ -432,8 +431,8 @@ with tab1:
                 )
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-# TAB 2 â€” RAG Evaluation
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ==============================================================================
+# TAB 2 - RAG Evaluation
+# ==============================================================================
 with tab2:
     _render_rag_tab()
